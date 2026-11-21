@@ -1,0 +1,17 @@
+# Build output
+build/
+.gradle/
+.kotlin/
+.idea/
+*.apk
+*.aab
+
+# Machine-specific
+local.properties
+
+# Game artwork (Gameforge's images and pictures made from them) is kept out of the public repo.
+# Recreate locally: run the app on your device, then art\make_gemini_inputs.ps1 / art\install_generated.ps1.
+art/source/
+art/for_gemini/
+art/generated/
+app/src/main/assets/art/

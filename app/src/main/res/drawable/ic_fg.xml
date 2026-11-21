@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Greek temple on the Aegean: launcher foreground (108dp canvas, art inside the 66dp safe zone). -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp" android:height="108dp"
+    android:viewportWidth="108" android:viewportHeight="108">
+    <path android:fillColor="#F2C14E"
+        android:pathData="M30,46 L54,32 L78,46 Z M32,47h44v4h-44z M35,52h5v18h-5z M46,52h5v18h-5z M57,52h5v18h-5z M68,52h5v18h-5z M31,71h46v4h-46z M28,76h52v4h-52z" />
+</vector>
