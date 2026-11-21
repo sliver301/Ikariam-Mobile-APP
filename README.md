@@ -75,8 +75,8 @@ installer registers all of them (from `art/source/layouts/layouts.json`).
 
 ## App icon
 
-The icon is original artwork drawn in code (a Greek temple on an Aegean island; no game images).
-`art/make_icon.ps1` draws it and writes the adaptive-icon foreground and `docs/icon.png`.
+The icon is original artwork (not taken from the game).
+`art/make_icon.py` (Python + Pillow) turns `art/icon_source.png` into the adaptive-icon foreground and `docs/icon.png`.
 
 ## Disclaimer
 
