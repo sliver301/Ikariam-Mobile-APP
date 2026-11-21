@@ -21,8 +21,9 @@ tap. It is an unofficial fan project and is not affiliated with Gameforge.
 - City and island maps: one-finger pan kept inside the city / island, with extra room at the top to pull the top
   buildings down to your thumb. Pinch or double-tap zooms the map only, never the bars.
 - Windows and side panels can be dragged by their title bar, and the app remembers where you left each one.
-- Two fingers inside a window (e.g. a battle report) zoom it up to 3x and pan around; pinch back to return it to
-  its normal size and place.
+- Two fingers inside a window (e.g. a battle report) zoom its content up to 4x around the fingers, inside the
+  window (the window and the rest of the app stay as they are). Zoomed content pans with one finger; a double-tap on
+  empty space resets it. Windows always open unzoomed.
 - Window lists scroll with a swipe (with a little fling).
 - Side menus: first tap expands an item, second tap opens it, a tap elsewhere collapses it.
 - Android Back closes the window / pop-up on top; with nothing open it shows the app menu
