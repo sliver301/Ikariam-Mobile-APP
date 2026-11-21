@@ -79,9 +79,22 @@ $out.Dispose(); $gen.Dispose(); $strip.Dispose()
 # Manifest: which city tiles this picture belongs to (the hash part of the game's tile URLs).
 $urls = Get-Content (Join-Path $art 'source\urls.json') -Raw | ConvertFrom-Json
 function Hash($u) { [IO.Path]::GetFileNameWithoutExtension(([Uri]$u).AbsolutePath) }
-$manifest = @{ cityTop = @(@{
-    tiles = @((Hash $urls.city_background_ne), (Hash $urls.city_background_nw))
-    file = $file; side = $SIDE; width = $W; ext = $edge; overlap = $OVERLAP
-}) }
+$pairs = New-Object System.Collections.ArrayList
+[void]$pairs.Add(@((Hash $urls.city_background_ne), (Hash $urls.city_background_nw)))
+# Every city layout (5 phases, normal + capital) has the same top edge, so the one picture
+# fits all of them: list each layout's top tiles (from art\source\layouts\layouts.json).
+$layoutsFile = Join-Path $art 'source\layouts\layouts.json'
+if (Test-Path $layoutsFile) {
+    $layouts = Get-Content $layoutsFile -Raw | ConvertFrom-Json
+    foreach ($p in $layouts.PSObject.Properties) {
+        $pair = @((Hash $p.Value.ne), (Hash $p.Value.nw))
+        if (-not ($pairs | Where-Object { $_[0] -eq $pair[0] -and $_[1] -eq $pair[1] })) { [void]$pairs.Add($pair) }
+    }
+}
+$entries = foreach ($pair in $pairs) {
+    @{ tiles = $pair; file = $file; side = $SIDE; width = $W; ext = $edge; overlap = $OVERLAP }
+}
+$manifest = @{ cityTop = @($entries) }
+"Layouts covered: $($pairs.Count)"
 $manifest | ConvertTo-Json -Depth 5 | Set-Content (Join-Path $assets 'manifest.json') -Encoding ascii
 "Installed $file (${W}x$outH) and manifest.json in $assets. Now rebuild the app."

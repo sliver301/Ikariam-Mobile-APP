@@ -60,6 +60,14 @@ top edge. A nicer, AI-generated extension can be added locally (the game's image
 3. Ask an image model to fill the grey area by extending the landscape upward; save the result in `art/generated/`.
 4. `art/install_generated.ps1 -Picture art/generated/<file>` installs it into the app; rebuild.
 
+All city layouts (phases 1–5, normal and capital) share the same top edge, so one picture covers every city; the
+installer registers all of them (from `art/source/layouts/layouts.json`).
+
+## App icon
+
+`art/make_icon.ps1` builds the launcher icon (picture + "mobile" banner) at 1024 px and writes the adaptive-icon
+foreground and `docs/icon.png`.
+
 ## Disclaimer
 
 Ikariam and its artwork are trademarks / property of Gameforge 4D GmbH. This project only provides a browser
