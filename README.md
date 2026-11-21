@@ -1,6 +1,6 @@
-<p align="center"><img src="docs/icon.png" width="128" alt="Ikariam Mobile icon"></p>
+<p align="center"><img src="docs/banner.jpg" width="100%" alt="Ikariam Mobile"></p>
 
-# Ikariam Mobile
+# <img src="docs/icon.png" width="40" align="center" alt=""> Ikariam Mobile
 
 An Android app for playing the browser game **Ikariam** comfortably on a phone, especially in portrait.
 
