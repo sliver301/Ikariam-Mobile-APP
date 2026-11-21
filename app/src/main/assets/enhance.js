@@ -92,7 +92,7 @@
       'html.ikm-portrait #js_viewCityMenu, html.ikm-portrait #js_viewFriends { top: calc(var(--ikm-tb, 48px) + 217px) !important; zoom: 1.45; }',
       // windows: anchored right, scaled to the screen width, just under the main panel
       'html.ikm-portrait .templateView { left: auto !important; right: 2px !important; top: calc(var(--ikm-tb, 48px) + 27px) !important;' +
-        ' transform: scale(var(--ikm-ws, var(--ikm-winscale, 0.88))); transform-origin: top right; }',
+        ' transform: scale(calc(var(--ikm-ws, var(--ikm-winscale, 0.88)) * var(--ikm-wz, 1))); transform-origin: top right; }',
       'html.ikm-portrait .templateView .mainContentScroll { height: var(--ikm-winh, 600px) !important; }',
       'html.ikm-portrait .templateView .scroll_area { display: none !important; }',
       // the window\'s side box (upgrade button etc.) goes under the window
@@ -523,6 +523,25 @@
         if (g.mode === 'drag') { var up = dragPoint(g.x, g.y); mouse('mouseup', up.x, up.y, null, 0); }
       }
       var a = e.touches[0], b = e.touches[1];
+      // Two fingers inside a game window (portrait): zoom and pan that window.
+      var winA = isPortrait() && a.target.closest && a.target.closest('.templateView');
+      var winB = isPortrait() && b.target.closest && b.target.closest('.templateView');
+      if (winA && winA === winB) {
+        var r0 = winA.getBoundingClientRect();         // 0-size anchor: the window's top-right corner
+        var s0 = winScale(winA);
+        var m0 = { x: (a.clientX + b.clientX) / 2, y: (a.clientY + b.clientY) / 2 };
+        g = {
+          mode: 'winpinch', win: winA, d0: dist(a, b), z0: winZoom(winA), s0: s0,
+          mt0: parseFloat(winA.style.marginTop) || 0, ml0: parseFloat(winA.style.marginLeft) || 0,
+          ax0: r0.left, ay0: r0.top,
+          // the window point under the fingers' midpoint (relative to the anchor, unscaled)
+          v: { x: (m0.x - r0.left) / s0, y: (m0.y - r0.top) / s0 }
+        };
+        // Remember where the window sat at normal size, to put it back when zoomed out again.
+        if (g.z0 <= 1.001) { winA.setAttribute('data-ikm-base', g.ml0 + ',' + g.mt0); }
+        if (e.cancelable) e.preventDefault();
+        return;
+      }
       // Two fingers on the map: zoom the map only (the bars never zoom).
       if (onMap(a.target) && onMap(b.target) && camView()) {
         var O = camOrigin();
@@ -562,6 +581,21 @@
   function onMove(e) {
     if (!g || g.mode === 'multi') return;
 
+    if (g.mode === 'winpinch') {
+      if (e.cancelable) e.preventDefault();
+      if (e.touches.length < 2) return;
+      var p = e.touches[0], q = e.touches[1];
+      var z = Math.max(1, Math.min(3, g.z0 * dist(p, q) / g.d0));
+      var fit = g.s0 / g.z0, s = fit * z;
+      var mx = (p.clientX + q.clientX) / 2, my = (p.clientY + q.clientY) / 2;
+      // keep the same window point under the fingers: move the anchor accordingly
+      var ax = mx - g.v.x * s, ay = my - g.v.y * s;
+      g.win.style.setProperty('--ikm-wz', z.toFixed(3));
+      g.win.style.marginLeft = (g.ml0 + ax - g.ax0) + 'px';
+      g.win.style.marginTop = (g.mt0 + ay - g.ay0) + 'px';
+      return;
+    }
+
     if (g.mode === 'campinch') {
       if (e.cancelable) e.preventDefault();
       if (e.touches.length < 2) return;
@@ -586,8 +620,10 @@
 
     if (g.mode === 'windrag') {                // portrait: we move the window ourselves
       if (e.cancelable) e.preventDefault();
-      g.win.style.marginTop = Math.max(-200, Math.min(window.innerHeight - 260, g.mt0 + dy)) + 'px';
-      g.win.style.marginLeft = Math.max(-300, Math.min(300, g.ml0 + dx)) + 'px';
+      // zoomed windows can be much larger than the screen: allow a wider range
+      var big = winZoom(g.win) > 1.03 ? 2000 : 0;
+      g.win.style.marginTop = Math.max(-200 - big, Math.min(window.innerHeight - 260, g.mt0 + dy)) + 'px';
+      g.win.style.marginLeft = Math.max(-300 - big, Math.min(300 + big, g.ml0 + dx)) + 'px';
       return;
     }
 
@@ -643,9 +679,18 @@
     } else if (g.mode === 'scroll') {
       if (e.cancelable) e.preventDefault();
       if (performance.now() - g.t < 80) startFling(g.scroll, g.v);
-    } else if (g.mode === 'campinch' || g.mode === 'pan' || g.mode === 'windrag') {
+    } else if (g.mode === 'campinch' || g.mode === 'pan' || g.mode === 'windrag' || g.mode === 'winpinch') {
       if (e.cancelable) e.preventDefault();
-      if (g.mode === 'windrag') savePanelPos(g.win);
+      if (g.mode === 'winpinch' && winZoom(g.win) <= 1.03) {
+        // zoomed back out: snap to normal size and the window's usual place
+        var base = (g.win.getAttribute('data-ikm-base') || '').split(',');
+        g.win.style.removeProperty('--ikm-wz');
+        g.win.style.marginLeft = (parseFloat(base[0]) || 0) + 'px';
+        g.win.style.marginTop = (parseFloat(base[1]) || 0) + 'px';
+      }
+      if (g.mode === 'windrag' || g.mode === 'winpinch') savePanelPos(g.win);
+      // lifting one of two fingers ends the gesture; the remaining finger starts nothing new
+      if (g.mode === 'winpinch' && e.touches.length) { g = { mode: 'multi' }; return; }
     } else if (g.mode === 'hover') {
       if (e.cancelable) e.preventDefault();     // holding = hover only, no click; info stays visible
     } else if (g.mode === 'pending' && g.map && g.cam) {
@@ -983,10 +1028,20 @@
     }
     return el.id ? 'win:' + el.id : null;
   }
+  // A window's zoom (two-finger pinch in portrait), 1 = fitted to the screen width.
+  function winZoom(tv) {
+    return parseFloat(tv.style.getPropertyValue('--ikm-wz')) || 1;
+  }
+  // The scale a window is drawn at right now: fit-to-width x zoom.
+  function winScale(tv) {
+    var fit = parseFloat(tv.style.getPropertyValue('--ikm-ws')) ||
+              parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--ikm-winscale')) || 0.88;
+    return fit * winZoom(tv);
+  }
   function savePanelPos(el) {
     var k = panelKey(el);
     if (!k) return;
-    panelPos[k] = { t: parseFloat(el.style.marginTop) || 0, l: parseFloat(el.style.marginLeft) || 0 };
+    panelPos[k] = { t: parseFloat(el.style.marginTop) || 0, l: parseFloat(el.style.marginLeft) || 0, z: winZoom(el) };
     el.setAttribute('data-ikm-pos', k);
     try { localStorage.setItem(POS_KEY, JSON.stringify(panelPos)); } catch (e) { /* storage full / blocked */ }
   }
@@ -997,6 +1052,8 @@
     var p = panelPos[k];
     el.style.marginTop = p ? p.t + 'px' : '';
     el.style.marginLeft = p ? p.l + 'px' : '';
+    if (p && p.z && p.z > 1) el.style.setProperty('--ikm-wz', String(p.z));
+    else el.style.removeProperty('--ikm-wz');
   }
   function isPortrait() {
     return document.documentElement.classList.contains('ikm-portrait');
