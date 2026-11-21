@@ -47,7 +47,13 @@ app/src/main/java/com/islam/ikariamtouch/   Android side (WebView, back button, 
 app/src/main/assets/enhance.js               Page script: layout, touch handling, map camera
 art/                                         Scripts to build an AI-extended city background
 build.bat                                    Local build script
+build_public.bat                             Build for public release (without the local city background)
 ```
+
+## Install
+
+Download the APK from [Releases](https://github.com/sliver301/Ikariam-Mobile-APP/releases), open it on the phone and
+allow installing from that app when Android asks. Android 12 or newer.
 
 ## Building
 
@@ -58,6 +64,8 @@ gradle assembleDebug
 ```
 
 or edit the paths in `build.bat` and run it. The APK is written to `app/build/outputs/apk/debug/app-debug.apk`.
+`build_public.bat` builds `IkariamMobile-public.apk` without the local extended city background (see below), from
+a fresh APK file so none of that picture remains in it.
 
 ## Extended city background (optional)
 
