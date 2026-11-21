@@ -29,6 +29,13 @@ tap. It is an unofficial fan project and is not affiliated with Gameforge.
 - Android Back closes the window / pop-up on top; with nothing open it shows the app menu
   (settings, reload, lobby, help, log out, exit).
 
+**News alerts (optional, on by default)**
+- While the app is closed, it checks every 15–30 minutes (varying) whether one of the four advisors
+  (towns, military, research, diplomacy) has news, and shows a notification; tapping it opens that advisor.
+- It is the same small, read-only request the open game page makes every minute (~7 KB), using the saved login.
+  Nothing in the game is changed. No check runs while the app is open. Turn it off in Settings.
+- Note: background requests may not be allowed by the game's rules; use at your own risk.
+
 **Other**
 - Login is kept between sessions; the Gameforge lobby's "Play" pop-up is handled.
 - Landscape mode is also supported (big native text editor for chat there).
@@ -68,8 +75,8 @@ installer registers all of them (from `art/source/layouts/layouts.json`).
 
 ## App icon
 
-`art/make_icon.ps1` builds the launcher icon (picture + "mobile" banner) at 1024 px and writes the adaptive-icon
-foreground and `docs/icon.png`.
+The icon is original artwork drawn in code (a Greek temple on an Aegean island; no game images).
+`art/make_icon.ps1` draws it and writes the adaptive-icon foreground and `docs/icon.png`.
 
 ## Disclaimer
 

@@ -1,5 +1,6 @@
 package com.islam.ikariamtouch
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
@@ -7,10 +8,12 @@ import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.pm.ApplicationInfo
+import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -81,20 +84,34 @@ class MainActivity : Activity() {
         buildUi()
         applyWindowPrefs()
         web.loadUrl(prefs.serverUrl)
+
+        NewsChecker.ensureChannels(this)
+        if (prefs.newsAlerts) askNotifyPermission(false)
+        handleNotificationIntent(intent)
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        handleNotificationIntent(intent)
     }
 
     override fun onResume() {
         super.onResume()
         web.onResume()
+        NewsChecker.appVisible = true
     }
 
     override fun onPause() {
         CookieManager.getInstance().flush()   // keep the login across restarts
         web.onPause()
+        NewsChecker.appVisible = false
+        NewsChecker.scheduleNext(this)        // next background news check in 15-30 min (if enabled)
         super.onPause()
     }
 
     override fun onDestroy() {
+        main.removeCallbacks(openAdvisorTry)
         main.removeCallbacksAndMessages(null)
         opener?.destroy()
         web.destroy()
@@ -467,6 +484,59 @@ class MainActivity : Activity() {
         web.evaluateJavascript("window.__ikm && window.__ikm.focusRaw(${JSONObject.quote(id)})", null)
     }
 
+    // ------------------------------------------------------------------ news notifications
+
+    /** Android 13+: ask once whether the app may show notifications (or again from Settings). */
+    private fun askNotifyPermission(fromSettings: Boolean) {
+        if (Build.VERSION.SDK_INT < 33) return
+        if (checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) return
+        if (prefs.askedNotifyPermission && !fromSettings) return
+        prefs.askedNotifyPermission = true
+        requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), REQ_NOTIFY)
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQ_NOTIFY && grantResults.firstOrNull() != PackageManager.PERMISSION_GRANTED) {
+            toast("News alerts need notifications. You can allow them later in the phone's app settings.")
+        }
+    }
+
+    /** Advisor the player tapped in a notification; opened once the game page is ready. */
+    private var pendingAdvisor: String? = null
+    private var advisorTries = 0
+
+    private fun handleNotificationIntent(intent: Intent?) {
+        val key = intent?.getStringExtra(NewsChecker.EXTRA_ADVISOR) ?: return
+        intent.removeExtra(NewsChecker.EXTRA_ADVISOR)
+        pendingAdvisor = when (key) {
+            "cities" -> "towns"
+            "diplomacy" -> "messages"
+            "military", "research" -> key
+            else -> null          // e.g. the "log in again" notice: just show the app
+        }
+        advisorTries = 0
+        main.removeCallbacks(openAdvisorTry)
+        if (pendingAdvisor != null) main.postDelayed(openAdvisorTry, 500)
+    }
+
+    /** Waits (up to ~40 s) until the game's advisor buttons exist, then taps the one asked for. */
+    private val openAdvisorTry = object : Runnable {
+        override fun run() {
+            val key = pendingAdvisor ?: return
+            if (++advisorTries > 50) { pendingAdvisor = null; return }
+            if (!onGameServer || progress.visibility == View.VISIBLE) {
+                main.postDelayed(this, 800)
+                return
+            }
+            web.evaluateJavascript(
+                "(window.__ikm && document.getElementById('advisors')) ? window.__ikm.go(${JSONObject.quote(key)}) : false"
+            ) { r ->
+                if (r == "true") pendingAdvisor = null else main.postDelayed(this, 800)
+            }
+        }
+    }
+
     // ------------------------------------------------------------------ back button + menu
 
     /**
@@ -539,7 +609,10 @@ class MainActivity : Activity() {
                 "• Two fingers or a double-tap on the map: zoom the map in and out (the game bars never zoom).\n" +
                 "• Back (button or swipe): closes the window on top. With nothing open, it opens this menu.\n" +
                 "• Portrait: type straight into the game's boxes with the normal keyboard. " +
-                "Landscape: tapping a text box opens a big editor."
+                "Landscape: tapping a text box opens a big editor.\n" +
+                "• News alerts: while the app is closed it checks every 15–30 minutes whether one of " +
+                "the four advisors has news and shows a notification. Tap it to open that advisor. " +
+                "Turn it off in Settings."
             )
             .setPositiveButton("OK", null)
             .show()
@@ -601,6 +674,7 @@ class MainActivity : Activity() {
         val cTouch = check("Touch fixes (drag map, hold = hover)", prefs.touchFix)
         val cComposer = check("Big text editor in landscape", prefs.composer)
         val cDesktop = check("Desktop mode (full game site)", prefs.desktopMode)
+        val cNews = check("News alerts when the app is closed (checks every 15–30 min)", prefs.newsAlerts)
 
         val scroll = ScrollView(this).apply { addView(box) }
 
@@ -620,6 +694,9 @@ class MainActivity : Activity() {
                 prefs.composer = cComposer.isChecked
                 val uaChanged = cDesktop.isChecked != prefs.desktopMode
                 prefs.desktopMode = cDesktop.isChecked
+                prefs.newsAlerts = cNews.isChecked
+                NewsChecker.scheduleNext(this)      // schedules, or cancels when turned off
+                if (cNews.isChecked) askNotifyPermission(true)   // asks only if not allowed yet
 
                 applyWindowPrefs()
                 pushConfig()
@@ -647,5 +724,6 @@ class MainActivity : Activity() {
         /** Game world hosts look like s66-ae.ikariam.gameforge.com */
         val GAME_HOST = Regex("^s\\d+-[a-z]+\\.ikariam\\.gameforge\\.com$", RegexOption.IGNORE_CASE)
         val ART_NAME = Regex("^[A-Za-z0-9_.-]+$")
+        private const val REQ_NOTIFY = 31
     }
 }

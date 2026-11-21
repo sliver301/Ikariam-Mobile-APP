@@ -44,6 +44,16 @@ class Prefs(context: Context) {
         get() = sp.getBoolean("desktopMode", true)
         set(v) { sp.edit().putBoolean("desktopMode", v).apply() }
 
+    /** Background check for advisor news every 15-30 minutes, shown as notifications. */
+    var newsAlerts: Boolean
+        get() = sp.getBoolean("newsAlerts", true)
+        set(v) { sp.edit().putBoolean("newsAlerts", v).apply() }
+
+    /** The notification permission was already asked for once (Android 13+). */
+    var askedNotifyPermission: Boolean
+        get() = sp.getBoolean("askedNotifyPermission", false)
+        set(v) { sp.edit().putBoolean("askedNotifyPermission", v).apply() }
+
     var barHidden: Boolean
         get() = sp.getBoolean("barHidden", false)
         set(v) { sp.edit().putBoolean("barHidden", v).apply() }

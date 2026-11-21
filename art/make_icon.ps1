@@ -1,100 +1,162 @@
-# Builds the app icon: the mayor picture with a red "mobile" banner, drawn sharp at 1024 px.
-#   powershell -ExecutionPolicy Bypass -File art\make_icon.ps1 [-Picture <square image>]
-# Writes: app/src/main/res/drawable-nodpi/ic_launcher_fg.png (adaptive icon foreground) and docs/icon.png.
-param([string]$Picture = '')
+# Builds the app icon from scratch (original artwork, no game images): a white Greek temple with a
+# terracotta roof on a green island in the Aegean, with the sun, a cloud and a small ship.
+#   powershell -ExecutionPolicy Bypass -File art\make_icon.ps1
+# Writes: app/src/main/res/drawable-nodpi/ic_launcher_fg.png (adaptive icon foreground, 432 px)
+#         docs/icon.png (512 px, rounded, for the GitHub page)
 Add-Type -AssemblyName System.Drawing
-Add-Type -ReferencedAssemblies System.Drawing -TypeDefinition @"
-using System; using System.Drawing; using System.Drawing.Imaging; using System.Runtime.InteropServices;
-public static class IconFx {
-    // Fades the left and right `f` px of an image to transparent so it blends into what is behind it.
-    public static void FadeSides(Bitmap b, int f) {
-        var d = b.LockBits(new Rectangle(0, 0, b.Width, b.Height), ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
-        var a = new int[b.Width * b.Height]; Marshal.Copy(d.Scan0, a, 0, a.Length);
-        for (int y = 0; y < b.Height; y++) for (int x = 0; x < b.Width; x++) {
-            int dist = Math.Min(x, b.Width - 1 - x); if (dist >= f) continue;
-            double k = (double)dist / f; k = k * k * (3 - 2 * k);
-            int i = y * b.Width + x; int al = (int)(((a[i] >> 24) & 255) * k); a[i] = (a[i] & 0xFFFFFF) | (al << 24);
-        }
-        Marshal.Copy(a, 0, d.Scan0, a.Length); b.UnlockBits(d);
-    }
-}
-"@
 $art = Split-Path -Parent $MyInvocation.MyCommand.Path
 $root = Split-Path -Parent $art
-if (-not $Picture) { $Picture = Join-Path $art 'generated\Ikariam Icon.jpg' }
 
-$N = 1024
-$src = [Drawing.Image]::FromFile($Picture)
-$icon = New-Object Drawing.Bitmap $N, $N, ([Drawing.Imaging.PixelFormat]::Format32bppArgb)
-$g = [Drawing.Graphics]::FromImage($icon)
-$g.SmoothingMode = 'AntiAlias'; $g.InterpolationMode = 'HighQualityBicubic'; $g.TextRenderingHint = 'AntiAliasGridFit'; $g.PixelOffsetMode = 'HighQuality'
-# sky backdrop (picture enlarged), then the mayor a bit smaller and higher so the whole beard shows above the banner
-$g.DrawImage($src, -60, -60, $N + 120, $N + 120)
-$mayor = New-Object Drawing.Bitmap 920, 920, ([Drawing.Imaging.PixelFormat]::Format32bppArgb)
-$gm = [Drawing.Graphics]::FromImage($mayor); $gm.InterpolationMode = 'HighQualityBicubic'; $gm.DrawImage($src, 0, 0, 920, 920); $gm.Dispose()
-[IconFx]::FadeSides($mayor, 110)
-$g.DrawImage($mayor, 52, -28, 920, 920); $mayor.Dispose()
-$src.Dispose()
+function C([string]$hex, [int]$a = 255) { [Drawing.Color]::FromArgb($a, [Drawing.ColorTranslator]::FromHtml($hex)) }
+function Grad($x, $y, $w, $h, $c1, $c2, $angle = 90) {
+    New-Object Drawing.Drawing2D.LinearGradientBrush((New-Object Drawing.RectangleF ([single]$x), ([single]$y), ([single]$w), ([single]$h)), $c1, $c2, ([single]$angle))
+}
+function Brush($c) { New-Object Drawing.SolidBrush $c }
+function Pen($c, $w) { $p = New-Object Drawing.Pen($c, ([single]$w)); $p.LineJoin = 'Round'; $p.StartCap = 'Round'; $p.EndCap = 'Round'; $p }
+function Poly($pts) {
+    $p = New-Object Drawing.Drawing2D.GraphicsPath
+    $arr = @(); for ($i = 0; $i -lt $pts.Count; $i += 2) { $arr += New-Object Drawing.PointF ([single]$pts[$i]), ([single]$pts[$i + 1]) }
+    $p.AddPolygon([Drawing.PointF[]]$arr); $p
+}
+function Rect($x, $y, $w, $h) { $p = New-Object Drawing.Drawing2D.GraphicsPath; $p.AddRectangle((New-Object Drawing.RectangleF ([single]$x), ([single]$y), ([single]$w), ([single]$h))); $p }
 
-function C($hex) { [Drawing.ColorTranslator]::FromHtml($hex) }
+# The scene is designed for a 1024 x 1024 visible square; sky and sea run on past its edges
+# (to -256 .. 1280) so the adaptive icon's hidden margin is filled too.
+function Draw-Scene([Drawing.Graphics]$g) {
+    $ink = C '#4A3826'
+    # --- sky
+    $g.FillRectangle((Grad -256 -256 1536 900 (C '#2F7FCF') (C '#BEE4F6')), -256, -256, 1536, 900)
+    # --- sun with glow
+    $glow = New-Object Drawing.Drawing2D.GraphicsPath; $glow.AddEllipse(590, 40, 380, 380)
+    $gb = New-Object Drawing.Drawing2D.PathGradientBrush $glow
+    $gb.CenterColor = C '#FFF4C0' 190; $gb.SurroundColors = [Drawing.Color[]]@((C '#FFF4C0' 0))
+    $g.FillPath($gb, $glow)
+    $g.FillEllipse((Grad 690 140 180 180 (C '#FFF6C8') (C '#FFC23A')), 690, 140, 180, 180)
+    # --- cloud
+    $cloud = (C '#FFFFFF' 235)
+    foreach ($e in @(@(110, 215, 150, 90), @(180, 175, 150, 120), @(270, 200, 150, 100), @(80, 245, 300, 70))) {
+        $g.FillEllipse((Brush $cloud), $e[0], $e[1], $e[2], $e[3])
+    }
+    $g.FillEllipse((Brush (C '#D6E9F5' 200)), 95, 278, 270, 30)
+    # --- far islands on the horizon (hazy)
+    $far = New-Object Drawing.Drawing2D.GraphicsPath
+    $far.AddBezier(-256, 650, -80, 640, 60, 585, 230, 650); $far.CloseFigure()
+    $g.FillPath((Brush (C '#86B3C9')), $far)
+    $far2 = New-Object Drawing.Drawing2D.GraphicsPath
+    $far2.AddBezier(860, 652, 940, 612, 1050, 610, 1280, 652); $far2.CloseFigure()
+    $g.FillPath((Brush (C '#96BED0')), $far2)
+    # --- sea
+    $g.FillRectangle((Grad -256 645 1536 640 (C '#3A9AD6') (C '#0E4A86')), -256, 645, 1536, 640)
+    $g.FillRectangle((Brush (C '#FFFFFF' 70)), -256, 645, 1536, 5)
+    # sun glitter
+    foreach ($s in @(@(740, 668, 90), @(760, 690, 60), @(720, 712, 110), @(770, 740, 50), @(735, 775, 80))) {
+        $g.DrawLine((Pen (C '#FFF3C4' 200) 7), $s[0], $s[1], $s[0] + $s[2], $s[1])
+    }
+    # --- island: sand under green
+    $sand = New-Object Drawing.Drawing2D.GraphicsPath
+    $sand.AddBezier(60, 770, 150, 700, 230, 650, 300, 648)
+    $sand.AddLine(300, 648, 724, 648)
+    $sand.AddBezier(724, 648, 794, 650, 874, 700, 964, 770)
+    $sand.CloseFigure()
+    $g.FillPath((Grad 60 640 904 130 (C '#F3E2A8') (C '#D7B86C')), $sand)
+    $grass = New-Object Drawing.Drawing2D.GraphicsPath
+    $grass.AddBezier(105, 742, 180, 680, 240, 628, 300, 626)
+    $grass.AddLine(300, 626, 724, 626)
+    $grass.AddBezier(724, 626, 784, 628, 844, 680, 919, 742)
+    $grass.AddBezier(919, 742, 700, 728, 324, 728, 105, 742)
+    $grass.CloseFigure()
+    $g.FillPath((Grad 100 600 820 150 (C '#7CC04A') (C '#3E7F2B')), $grass)
+    # foam along the beach
+    $foam = New-Object Drawing.Drawing2D.GraphicsPath
+    $foam.AddBezier(40, 778, 300, 800, 724, 800, 984, 778)
+    $g.DrawPath((Pen (C '#FFFFFF' 210) 9), $foam)
+    # olive trees
+    foreach ($t in @(@(210, 660, 1.0), @(818, 664, 0.9), @(255, 672, 0.75))) {
+        $x = $t[0]; $y = $t[1]; $k = $t[2]
+        $g.FillRectangle((Brush (C '#6B4A2A')), $x - 5 * $k, $y, 10 * $k, 26 * $k)
+        $g.FillEllipse((Brush (C '#2F6B26')), $x - 34 * $k, $y - 50 * $k, 68 * $k, 62 * $k)
+        $g.FillEllipse((Brush (C '#4C9234')), $x - 26 * $k, $y - 46 * $k, 46 * $k, 42 * $k)
+    }
+    # --- temple
+    $g.FillEllipse((Brush (C '#1F4A18' 110)), 270, 610, 484, 44)            # its shadow on the grass
+    $stone = C '#F4EDE0'; $stoneDark = C '#CDBFA6'
+    $steps = @(@(286, 598, 452, 30), @(302, 572, 420, 28), @(318, 550, 388, 24))
+    foreach ($s in $steps) {
+        $p = Rect $s[0] $s[1] $s[2] $s[3]
+        $g.FillPath((Grad $s[0] $s[1] $s[2] $s[3] $stone $stoneDark), $p)
+        $g.DrawPath((Pen $ink 5), $p)
+    }
+    # dark inner wall between the columns
+    $g.FillRectangle((Grad 330 380 364 172 (C '#7E6A52') (C '#5C4A36')), 330, 380, 364, 172)
+    # six columns
+    for ($i = 0; $i -lt 6; $i++) {
+        $x = 338 + $i * 62
+        $shaft = Rect $x 396 40 154
+        $g.FillPath((Grad $x 396 40 154 (C '#FFFFFF') (C '#D4C8B2') 0), $shaft)
+        $g.DrawLine((Pen (C '#C4B59B') 3), $x + 14, 404, $x + 14, 544)
+        $g.DrawLine((Pen (C '#C4B59B') 3), $x + 27, 404, $x + 27, 544)
+        $g.DrawPath((Pen $ink 4), $shaft)
+        $cap = Rect ($x - 8) 384 56 14
+        $g.FillPath((Brush $stone), $cap); $g.DrawPath((Pen $ink 4), $cap)
+    }
+    # architrave and frieze
+    $arch = Rect 314 342 396 44
+    $g.FillPath((Grad 314 342 396 44 $stone $stoneDark), $arch); $g.DrawPath((Pen $ink 5), $arch)
+    $g.DrawLine((Pen (C '#B89F78') 4), 318, 362, 706, 362)
+    for ($x = 336; $x -le 690; $x += 34) { $g.DrawLine((Pen (C '#B89F78') 3), $x, 366, $x, 382) }
+    # cornice
+    $corn = Rect 298 328 428 16
+    $g.FillPath((Brush $stone), $corn); $g.DrawPath((Pen $ink 5), $corn)
+    # terracotta pediment roof with a lighter gable inside and a gold ornament on top
+    $roof = Poly @(292, 330, 512, 220, 732, 330)
+    $g.FillPath((Grad 292 220 440 110 (C '#E0623A') (C '#A8331C')), $roof); $g.DrawPath((Pen $ink 6), $roof)
+    $gable = Poly @(350, 322, 512, 248, 674, 322)
+    $g.FillPath((Grad 350 248 324 74 (C '#F0C9A0') (C '#D49C6C')), $gable); $g.DrawPath((Pen (C '#8E3A1E') 4), $gable)
+    $g.FillEllipse((Grad 494 196 36 36 (C '#FFF0A0') (C '#C98A14')), 494, 196, 36, 36)
+    $g.DrawEllipse((Pen $ink 4), 494, 196, 36, 36)
+    # --- small ship with a red sail
+    $hull = Poly @(724, 846, 868, 846, 846, 880, 748, 880)
+    $g.FillPath((Brush (C '#6B4423')), $hull); $g.DrawPath((Pen (C '#3A2410') 4), $hull)
+    $g.DrawLine((Pen (C '#3A2410') 6), 796, 846, 796, 742)
+    $sail = Poly @(752, 752, 842, 752, 836, 832, 758, 832)
+    $g.FillPath((Grad 752 752 90 80 (C '#E5483A') (C '#A82218') 0), $sail); $g.DrawPath((Pen (C '#5A1A10') 4), $sail)
+    $g.FillRectangle((Brush (C '#F6E7C8')), 755, 784, 84, 14)
+    # --- waves
+    foreach ($w in @(@(120, 900), @(330, 950), @(560, 910), @(220, 1010), @(640, 990), @(900, 940))) {
+        $arc = New-Object Drawing.Drawing2D.GraphicsPath
+        $arc.AddBezier($w[0], $w[1], $w[0] + 25, $w[1] - 22, $w[0] + 55, $w[1] - 22, $w[0] + 80, $w[1])
+        $g.DrawPath((Pen (C '#FFFFFF' 150) 7), $arc)
+    }
+}
 
-# Banner: curved top edge across the bottom of the icon.
-$top = 772; $edge = 862
-$banner = New-Object Drawing.Drawing2D.GraphicsPath
-$banner.AddBezier(-20, $edge, 330, $top, 694, $top, $N + 20, $edge)
-$banner.AddLine($N + 20, $edge, $N + 20, $N + 20)
-$banner.AddLine($N + 20, $N + 20, -20, $N + 20)
-$banner.CloseFigure()
-$red = New-Object Drawing.Drawing2D.LinearGradientBrush((New-Object Drawing.Rectangle 0, $top, $N, ($N - $top)), (C '#A3141A'), (C '#5C0609'), 90)
-$g.FillPath($red, $banner)
-# soft highlight along the upper part of the banner
-$hl = New-Object Drawing.Drawing2D.LinearGradientBrush((New-Object Drawing.Rectangle 0, $top, $N, 140), ([Drawing.Color]::FromArgb(70, 255, 120, 110)), ([Drawing.Color]::FromArgb(0, 255, 120, 110)), 90)
-$g.FillPath($hl, $banner)
+function New-Canvas($size) {
+    $b = New-Object Drawing.Bitmap $size, $size, ([Drawing.Imaging.PixelFormat]::Format32bppArgb)
+    $g = [Drawing.Graphics]::FromImage($b)
+    $g.SmoothingMode = 'AntiAlias'; $g.InterpolationMode = 'HighQualityBicubic'; $g.PixelOffsetMode = 'HighQuality'
+    @($b, $g)
+}
+function Resize($src, $size) {
+    $r = New-Canvas $size; $r[1].DrawImage($src, 0, 0, $size, $size); $r[1].Dispose(); $r[0]
+}
 
-# Gold rim along the curve (dark outline, then a gold band with a light centre line).
-$curve = New-Object Drawing.Drawing2D.GraphicsPath
-$curve.AddBezier(-20, $edge, 330, $top, 694, $top, $N + 20, $edge)
-$penDark = New-Object Drawing.Pen((C '#4A2A06'), 30); $penDark.LineJoin = 'Round'
-$g.DrawPath($penDark, $curve)
-$goldBrush = New-Object Drawing.Drawing2D.LinearGradientBrush((New-Object Drawing.Rectangle 0, ($top - 20), $N, 120), (C '#FFF0A0'), (C '#B8771A'), 90)
-$penGold = New-Object Drawing.Pen($goldBrush, 20); $penGold.LineJoin = 'Round'
-$g.DrawPath($penGold, $curve)
-$penShine = New-Object Drawing.Pen(([Drawing.Color]::FromArgb(170, 255, 250, 215)), 5)
-$g.DrawPath($penShine, $curve)
+# Adaptive-icon foreground: 108 dp canvas whose middle 72 dp is what the launcher shows.
+# Draw at 1536 (the 1024 design in the middle), then scale to 432 px (108 dp at xxxhdpi).
+$big = New-Canvas 1536
+$big[1].TranslateTransform(256, 256); Draw-Scene $big[1]; $big[1].Dispose()
+$fg = Resize $big[0] 432
+$fg.Save((Join-Path $root 'app\src\main\res\drawable-nodpi\ic_launcher_fg.png'), [Drawing.Imaging.ImageFormat]::Png)
+$fg.Dispose()
 
-# "mobile" in gold with a dark outline and a soft shadow.
-$fam = New-Object Drawing.FontFamily 'Berlin Sans FB Demi'
-$fmt = New-Object Drawing.StringFormat; $fmt.Alignment = 'Center'; $fmt.LineAlignment = 'Center'
-$textRect = New-Object Drawing.RectangleF 0, 832, $N, 192
-$text = New-Object Drawing.Drawing2D.GraphicsPath
-$text.AddString('mobile', $fam, [int][Drawing.FontStyle]::Bold, 200, $textRect, $fmt)
-$shadow = $text.Clone(); $m = New-Object Drawing.Drawing2D.Matrix; $m.Translate(0, 9); $shadow.Transform($m)
-$g.FillPath((New-Object Drawing.SolidBrush ([Drawing.Color]::FromArgb(140, 30, 5, 0))), $shadow)
-$outline = New-Object Drawing.Pen((C '#3E1E04'), 16); $outline.LineJoin = 'Round'
-$g.DrawPath($outline, $text)
-$b = $text.GetBounds()
-$textGold = New-Object Drawing.Drawing2D.LinearGradientBrush((New-Object Drawing.RectangleF $b.X, $b.Y, $b.Width, $b.Height), (C '#FFF6B0'), (C '#C17A12'), 90)
-$blend = New-Object Drawing.Drawing2D.ColorBlend 3
-$blend.Colors = @((C '#FFF6B8'), (C '#F7C443'), (C '#B8700F')); $blend.Positions = @(0.0, 0.5, 1.0)
-$textGold.InterpolationColors = $blend
-$g.FillPath($textGold, $text)
-$g.Dispose()
-
-# docs/icon.png (512) for the GitHub page.
+# docs/icon.png: the visible 1024 square, rounded corners, 512 px.
+$sq = New-Canvas 1024
+$sq[1].DrawImage($big[0], -256, -256); $sq[1].Dispose(); $big[0].Dispose()
+$rounded = New-Canvas 1024
+$rp = New-Object Drawing.Drawing2D.GraphicsPath; $r = 220
+$rp.AddArc(0, 0, $r, $r, 180, 90); $rp.AddArc(1024 - $r, 0, $r, $r, 270, 90)
+$rp.AddArc(1024 - $r, 1024 - $r, $r, $r, 0, 90); $rp.AddArc(0, 1024 - $r, $r, $r, 90, 90); $rp.CloseFigure()
+$rounded[1].FillPath((New-Object Drawing.TextureBrush $sq[0]), $rp); $rounded[1].Dispose()
 New-Item -ItemType Directory -Force (Join-Path $root 'docs') | Out-Null
-$small = New-Object Drawing.Bitmap 512, 512
-$gs = [Drawing.Graphics]::FromImage($small); $gs.InterpolationMode = 'HighQualityBicubic'; $gs.SmoothingMode = 'AntiAlias'
-$gs.DrawImage($icon, 0, 0, 512, 512); $gs.Dispose()
-$small.Save((Join-Path $root 'docs\icon.png'), [Drawing.Imaging.ImageFormat]::Png); $small.Dispose()
-
-# Adaptive icon foreground: 432 px canvas (108 dp at xxxhdpi). The launcher shows the middle
-# 72 dp (288 px), so the full design goes there; the hidden margin gets the picture enlarged.
-$fg = New-Object Drawing.Bitmap 432, 432
-$gf = [Drawing.Graphics]::FromImage($fg); $gf.InterpolationMode = 'HighQualityBicubic'; $gf.SmoothingMode = 'AntiAlias'; $gf.PixelOffsetMode = 'HighQuality'
-$gf.DrawImage($icon, -72, -72, 576, 576)
-$gf.DrawImage($icon, 72, 72, 288, 288)
-$gf.Dispose()
-$fg.Save((Join-Path $root 'app\src\main\res\drawable-nodpi\ic_launcher_fg.png'), [Drawing.Imaging.ImageFormat]::Png); $fg.Dispose()
-
-$icon.Save((Join-Path $art 'generated\icon_1024.png'), [Drawing.Imaging.ImageFormat]::Png); $icon.Dispose()
-"Icon written: docs\icon.png, res\drawable-nodpi\ic_launcher_fg.png, art\generated\icon_1024.png"
+$small = Resize $rounded[0] 512
+$small.Save((Join-Path $root 'docs\icon.png'), [Drawing.Imaging.ImageFormat]::Png)
+$small.Dispose(); $rounded[0].Dispose(); $sq[0].Dispose()
+"Icon written: docs\icon.png, res\drawable-nodpi\ic_launcher_fg.png"
