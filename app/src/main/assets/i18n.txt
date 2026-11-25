@@ -1,0 +1,380 @@
+# The app's own words in every language Ikariam offers (the game's own buttons keep the game's words).
+# A line starting with @ names the columns of the lines below it; those start with a language.
+# A missing word shows in English. Game language codes -> these languages: Lang.kt.
+
+@|more|appMenu|avatar|shop|editOrder|saveOrder|saving|orderSaved|orderFailed|friends|cityMenu|cancel|close
+en|More|App menu|Avatar|Shop|Edit order|Save order|Saving…|Town order saved|The order was not saved. Try again, or use the game's Options.|Friends|Town menu|Cancel|Close
+ar|المزيد|قائمة التطبيق|الصورة الرمزية|المتجر|تعديل الترتيب|حفظ الترتيب|جارٍ الحفظ…|تم حفظ ترتيب المدن|لم يُحفظ الترتيب. حاول مرة أخرى أو استخدم خيارات اللعبة.|الأصدقاء|قائمة المدينة|إلغاء|اغلق
+bg|Още|Меню на приложението|Аватар|Магазин|Подреждане|Запази реда|Запазване…|Редът на градовете е запазен|Редът не е запазен. Опитай пак или използвай опциите на играта.|Приятели|Меню на града|Отказ|Затвори
+cs|Více|Menu aplikace|Avatar|Obchod|Upravit pořadí|Uložit pořadí|Ukládání…|Pořadí měst uloženo|Pořadí nebylo uloženo. Zkus to znovu nebo použij nastavení hry.|Přátelé|Menu města|Zrušit|Zavřít
+de|Mehr|App-Menü|Avatar|Shop|Reihenfolge ändern|Reihenfolge speichern|Speichern…|Stadtreihenfolge gespeichert|Reihenfolge nicht gespeichert. Versuche es erneut oder nutze die Spieloptionen.|Freunde|Stadtmenü|Abbrechen|Schließen
+da|Mere|App-menu|Avatar|Butik|Rediger rækkefølge|Gem rækkefølge|Gemmer…|Byernes rækkefølge er gemt|Rækkefølgen blev ikke gemt. Prøv igen, eller brug spillets indstillinger.|Venner|Bymenu|Annuller|Luk
+es|Más|Menú de la app|Avatar|Tienda|Editar orden|Guardar orden|Guardando…|Orden de ciudades guardado|No se guardó el orden. Inténtalo de nuevo o usa las opciones del juego.|Amigos|Menú ciudad|Cancelar|Cerrar
+fi|Lisää|Sovellusvalikko|Avatar|Kauppa|Muokkaa järjestystä|Tallenna järjestys|Tallennetaan…|Kaupunkien järjestys tallennettu|Järjestystä ei tallennettu. Yritä uudelleen tai käytä pelin asetuksia.|Ystävät|Kaupunki|Peruuta|Sulje
+fr|Plus|Menu de l'appli|Avatar|Boutique|Modifier l'ordre|Enregistrer l'ordre|Enregistrement…|Ordre des villes enregistré|Ordre non enregistré. Réessayez ou utilisez les options du jeu.|Amis|Menu ville|Annuler|Fermer
+el|Περισσότερα|Μενού εφαρμογής|Άβαταρ|Κατάστημα|Αλλαγή σειράς|Αποθήκευση σειράς|Αποθήκευση…|Η σειρά των πόλεων αποθηκεύτηκε|Η σειρά δεν αποθηκεύτηκε. Δοκίμασε ξανά ή από τις επιλογές του παιχνιδιού.|Φίλοι|Μενού πόλης|Ακύρωση|Κλείσιμο
+hu|Több|App menü|Avatár|Bolt|Sorrend szerkesztése|Sorrend mentése|Mentés…|Városok sorrendje mentve|A sorrend nem lett mentve. Próbáld újra, vagy használd a játék beállításait.|Barátok|Város menü|Mégse|Bezár
+he|עוד|תפריט האפליקציה|אווטאר|חנות|עריכת הסדר|שמירת הסדר|שומר…|סדר הערים נשמר|הסדר לא נשמר. נסו שוב או השתמשו באפשרויות המשחק.|חברים|תפריט העיר|ביטול|סגור
+it|Altro|Menu dell'app|Avatar|Negozio|Modifica ordine|Salva ordine|Salvataggio…|Ordine delle città salvato|Ordine non salvato. Riprova o usa le opzioni del gioco.|Amici|Menu città|Annulla|Chiudi
+lt|Daugiau|Programėlės meniu|Avataras|Parduotuvė|Keisti tvarką|Išsaugoti tvarką|Saugoma…|Miestų tvarka išsaugota|Tvarka neišsaugota. Bandyk dar kartą arba naudok žaidimo nustatymus.|Draugai|Miesto meniu|Atšaukti|Uždaryti
+lv|Vairāk|Lietotnes izvēlne|Avatars|Veikals|Mainīt secību|Saglabāt secību|Saglabā…|Pilsētu secība saglabāta|Secība netika saglabāta. Mēģini vēlreiz vai izmanto spēles iestatījumus.|Draugi|Pilsēta|Atcelt|Aizvērt
+nl|Meer|App-menu|Avatar|Winkel|Volgorde wijzigen|Volgorde opslaan|Opslaan…|Volgorde van steden opgeslagen|Volgorde niet opgeslagen. Probeer opnieuw of gebruik de spelopties.|Vrienden|Stadsmenu|Annuleren|Sluiten
+no|Mer|Appmeny|Avatar|Butikk|Endre rekkefølge|Lagre rekkefølge|Lagrer…|Rekkefølgen på byene er lagret|Rekkefølgen ble ikke lagret. Prøv igjen, eller bruk spillets innstillinger.|Venner|Bymeny|Avbryt|Lukk
+pl|Więcej|Menu aplikacji|Awatar|Sklep|Zmień kolejność|Zapisz kolejność|Zapisywanie…|Zapisano kolejność miast|Nie zapisano kolejności. Spróbuj ponownie lub użyj opcji gry.|Znajomi|Menu miasta|Anuluj|Zamknij
+pt|Mais|Menu do app|Avatar|Loja|Editar ordem|Salvar ordem|Salvando…|Ordem das cidades salva|A ordem não foi salva. Tente de novo ou use as opções do jogo.|Amigos|Menu cidade|Cancelar|Fechar
+ro|Mai mult|Meniul aplicației|Avatar|Magazin|Editează ordinea|Salvează ordinea|Se salvează…|Ordinea orașelor a fost salvată|Ordinea nu a fost salvată. Încearcă din nou sau folosește opțiunile jocului.|Prieteni|Meniu oraș|Anulează|Închide
+ru|Ещё|Меню приложения|Аватар|Магазин|Изменить порядок|Сохранить порядок|Сохранение…|Порядок городов сохранён|Порядок не сохранён. Повторите или используйте настройки игры.|Друзья|Меню города|Отмена|Закрыть
+sv|Mer|Appmeny|Avatar|Butik|Ändra ordning|Spara ordning|Sparar…|Städernas ordning sparad|Ordningen sparades inte. Försök igen eller använd spelets inställningar.|Vänner|Stadsmeny|Avbryt|Stäng
+sl|Več|Meni aplikacije|Avatar|Trgovina|Uredi vrstni red|Shrani vrstni red|Shranjevanje…|Vrstni red mest je shranjen|Vrstni red ni shranjen. Poskusi znova ali uporabi možnosti igre.|Prijatelji|Meni mesta|Prekliči|Zapri
+sk|Viac|Menu aplikácie|Avatar|Obchod|Upraviť poradie|Uložiť poradie|Ukladá sa…|Poradie miest uložené|Poradie nebolo uložené. Skús to znova alebo použi nastavenia hry.|Priatelia|Menu mesta|Zrušiť|Zavrieť
+tr|Daha fazla|Uygulama menüsü|Avatar|Mağaza|Sırayı düzenle|Sırayı kaydet|Kaydediliyor…|Şehir sırası kaydedildi|Sıra kaydedilmedi. Tekrar dene veya oyun seçeneklerini kullan.|Arkadaşlar|Şehir menüsü|İptal|Kapat
+zh|更多|應用程式選單|頭像|商店|編輯順序|儲存順序|儲存中…|已儲存城市順序|未能儲存順序。請再試一次或使用遊戲選項。|好友|城市選單|取消|關閉
+sr|Više|Meni aplikacije|Avatar|Prodavnica|Uredi redoslijed|Sačuvaj redoslijed|Čuvanje…|Redoslijed gradova je sačuvan|Redoslijed nije sačuvan. Pokušaj ponovo ili koristi opcije igre.|Prijatelji|Meni grada|Otkaži|Zatvori
+
+@|settings|reload|restore|lobby|help|logout|exit|save
+en|Settings|Reload game|Restore panel positions|Gameforge lobby (change server)|How to play with touch|Log out and clear saved data|Exit app|Save
+ar|الإعدادات|إعادة تحميل اللعبة|إعادة اللوحات إلى أماكنها|ردهة Gameforge (تغيير الخادم)|طريقة اللعب باللمس|تسجيل الخروج ومسح البيانات المحفوظة|إغلاق التطبيق|حفظ
+bg|Настройки|Презареди играта|Върни панелите по местата им|Лоби на Gameforge (смяна на сървър)|Как се играе с докосване|Изход и изтриване на данните|Затвори приложението|Запази
+cs|Nastavení|Načíst hru znovu|Obnovit pozice panelů|Lobby Gameforge (změna serveru)|Jak hrát dotykem|Odhlásit a smazat data|Ukončit aplikaci|Uložit
+de|Einstellungen|Spiel neu laden|Fensterpositionen zurücksetzen|Gameforge-Lobby (Server wechseln)|Spielen mit Touch|Abmelden und Daten löschen|App beenden|Speichern
+da|Indstillinger|Genindlæs spillet|Gendan panelernes placering|Gameforge-lobby (skift server)|Sådan spiller du med touch|Log ud og slet data|Luk appen|Gem
+es|Ajustes|Recargar el juego|Restablecer paneles|Lobby de Gameforge (cambiar servidor)|Cómo jugar con los dedos|Cerrar sesión y borrar datos|Salir de la app|Guardar
+fi|Asetukset|Lataa peli uudelleen|Palauta paneelien paikat|Gameforge-aula (vaihda palvelinta)|Pelaaminen kosketuksella|Kirjaudu ulos ja poista tiedot|Sulje sovellus|Tallenna
+fr|Paramètres|Recharger le jeu|Replacer les panneaux|Lobby Gameforge (changer de serveur)|Jouer au toucher|Se déconnecter et effacer les données|Quitter l'appli|Enregistrer
+el|Ρυθμίσεις|Επαναφόρτωση παιχνιδιού|Επαναφορά θέσεων πινάκων|Λόμπι Gameforge (αλλαγή διακομιστή)|Παιχνίδι με αφή|Αποσύνδεση και διαγραφή δεδομένων|Έξοδος|Αποθήκευση
+hu|Beállítások|Játék újratöltése|Panelek visszaállítása|Gameforge lobbi (szerverváltás)|Játék érintéssel|Kijelentkezés és adatok törlése|Kilépés|Mentés
+he|הגדרות|טעינת המשחק מחדש|החזרת החלונות למקומם|לובי Gameforge (החלפת שרת)|איך משחקים במגע|התנתקות ומחיקת נתונים|יציאה מהאפליקציה|שמירה
+it|Impostazioni|Ricarica il gioco|Ripristina i pannelli|Lobby Gameforge (cambia server)|Come giocare con il tocco|Esci e cancella i dati|Chiudi l'app|Salva
+lt|Nustatymai|Įkelti žaidimą iš naujo|Atkurti langų vietas|Gameforge vestibiulis (keisti serverį)|Kaip žaisti lietimu|Atsijungti ir ištrinti duomenis|Uždaryti programėlę|Išsaugoti
+lv|Iestatījumi|Pārlādēt spēli|Atjaunot paneļu vietas|Gameforge vestibils (mainīt serveri)|Kā spēlēt ar pieskārieniem|Izrakstīties un dzēst datus|Aizvērt lietotni|Saglabāt
+nl|Instellingen|Spel herladen|Vensterposities herstellen|Gameforge-lobby (server wisselen)|Spelen met aanraking|Uitloggen en gegevens wissen|App afsluiten|Opslaan
+no|Innstillinger|Last spillet på nytt|Gjenopprett panelplasseringer|Gameforge-lobby (bytt server)|Slik spiller du med berøring|Logg ut og slett data|Avslutt appen|Lagre
+pl|Ustawienia|Przeładuj grę|Przywróć pozycje paneli|Lobby Gameforge (zmiana serwera)|Jak grać dotykiem|Wyloguj i usuń dane|Zamknij aplikację|Zapisz
+pt|Configurações|Recarregar o jogo|Restaurar painéis|Lobby da Gameforge (mudar servidor)|Como jogar com toque|Sair e apagar dados|Fechar o app|Salvar
+ro|Setări|Reîncarcă jocul|Restabilește panourile|Lobby Gameforge (schimbă serverul)|Cum se joacă prin atingere|Deconectare și ștergere date|Închide aplicația|Salvează
+ru|Настройки|Перезагрузить игру|Вернуть панели на место|Лобби Gameforge (смена сервера)|Как играть касаниями|Выйти и удалить данные|Закрыть приложение|Сохранить
+sv|Inställningar|Ladda om spelet|Återställ panelernas platser|Gameforge-lobby (byt server)|Spela med pekskärm|Logga ut och rensa data|Avsluta appen|Spara
+sl|Nastavitve|Znova naloži igro|Obnovi položaje oken|Lobi Gameforge (menjava strežnika)|Igranje z dotikom|Odjava in izbris podatkov|Zapri aplikacijo|Shrani
+sk|Nastavenia|Načítať hru znova|Obnoviť pozície panelov|Lobby Gameforge (zmena servera)|Ako hrať dotykom|Odhlásiť a vymazať údaje|Ukončiť aplikáciu|Uložiť
+tr|Ayarlar|Oyunu yeniden yükle|Panel konumlarını sıfırla|Gameforge lobisi (sunucu değiştir)|Dokunarak nasıl oynanır|Çıkış yap ve verileri sil|Uygulamayı kapat|Kaydet
+zh|設定|重新載入遊戲|恢復面板位置|Gameforge 大廳（切換伺服器）|觸控操作說明|登出並清除資料|關閉應用程式|儲存
+sr|Podešavanja|Ponovo učitaj igru|Vrati položaje prozora|Gameforge lobi (promjena servera)|Kako igrati dodirom|Odjavi se i obriši podatke|Zatvori aplikaciju|Sačuvaj
+
+@|logoutMsg|retry|noConnection|noApp|crashed|restored|openGame|needNotify
+en|This removes your saved login and cached game files. You will need to log in again.|Try again|Couldn't reach the game. Check your internet connection.|No app can open this link|The game page crashed and was reloaded|Panels are back in their places|Open the game first|News alerts need the notification permission. You can allow it in the phone's settings.
+ar|سيُحذف تسجيل دخولك المحفوظ وملفات اللعبة المؤقتة، وستحتاج إلى تسجيل الدخول مجددًا.|حاول مرة أخرى|تعذّر الوصول إلى اللعبة. تحقق من اتصالك بالإنترنت.|لا يوجد تطبيق يفتح هذا الرابط|تعطلت صفحة اللعبة وأعيد تحميلها|عادت اللوحات إلى أماكنها|افتح اللعبة أولًا|تحتاج التنبيهات إلى إذن الإشعارات. يمكنك السماح به من إعدادات الهاتف.
+bg|Това изтрива запазения вход и файловете на играта. Ще трябва да влезеш отново.|Опитай пак|Няма връзка с играта. Провери интернет връзката.|Няма приложение за този линк|Страницата на играта се срина и беше презаредена|Панелите са по местата си|Първо отвори играта|Известията изискват разрешение. Може да го дадеш от настройките на телефона.
+cs|Smaže uložené přihlášení a soubory hry. Budeš se muset znovu přihlásit.|Zkusit znovu|Hra není dostupná. Zkontroluj připojení k internetu.|Žádná aplikace neumí otevřít tento odkaz|Stránka hry spadla a byla načtena znovu|Panely jsou zpět na místě|Nejdřív otevři hru|Upozornění potřebují oprávnění. Povolíš je v nastavení telefonu.
+de|Löscht deine gespeicherte Anmeldung und Spieldateien. Du musst dich neu anmelden.|Erneut versuchen|Das Spiel ist nicht erreichbar. Prüfe deine Internetverbindung.|Keine App kann diesen Link öffnen|Die Spielseite ist abgestürzt und wurde neu geladen|Die Fenster sind zurück an ihrem Platz|Öffne zuerst das Spiel|Benachrichtigungen brauchen eine Berechtigung. Du kannst sie in den Handy-Einstellungen erlauben.
+da|Sletter dit gemte login og spilfiler. Du skal logge ind igen.|Prøv igen|Kunne ikke nå spillet. Tjek internetforbindelsen.|Ingen app kan åbne linket|Spilsiden gik ned og blev genindlæst|Panelerne er tilbage på plads|Åbn spillet først|Notifikationer kræver tilladelse. Giv den i telefonens indstillinger.
+es|Borra tu sesión guardada y los archivos del juego. Tendrás que volver a entrar.|Reintentar|No se pudo conectar con el juego. Revisa tu conexión.|Ninguna app puede abrir este enlace|La página del juego falló y se recargó|Los paneles volvieron a su sitio|Abre primero el juego|Los avisos necesitan permiso de notificaciones. Puedes darlo en los ajustes del teléfono.
+fi|Poistaa tallennetun kirjautumisen ja pelin tiedostot. Sinun on kirjauduttava uudelleen.|Yritä uudelleen|Peliin ei saatu yhteyttä. Tarkista internetyhteys.|Mikään sovellus ei voi avata linkkiä|Pelisivu kaatui ja ladattiin uudelleen|Paneelit ovat taas paikoillaan|Avaa ensin peli|Ilmoitukset vaativat luvan. Voit antaa sen puhelimen asetuksissa.
+fr|Efface votre connexion enregistrée et les fichiers du jeu. Vous devrez vous reconnecter.|Réessayer|Impossible de joindre le jeu. Vérifiez votre connexion Internet.|Aucune appli ne peut ouvrir ce lien|La page du jeu a planté et a été rechargée|Les panneaux sont revenus à leur place|Ouvrez d'abord le jeu|Les alertes nécessitent une autorisation. Accordez-la dans les réglages du téléphone.
+el|Διαγράφει την αποθηκευμένη σύνδεση και τα αρχεία του παιχνιδιού. Θα χρειαστεί νέα σύνδεση.|Δοκίμασε ξανά|Δεν υπάρχει σύνδεση με το παιχνίδι. Έλεγξε το ίντερνετ.|Καμία εφαρμογή δεν ανοίγει αυτόν τον σύνδεσμο|Η σελίδα κατέρρευσε και φορτώθηκε ξανά|Οι πίνακες επέστρεψαν στη θέση τους|Άνοιξε πρώτα το παιχνίδι|Οι ειδοποιήσεις χρειάζονται άδεια από τις ρυθμίσεις του τηλεφώνου.
+hu|Törli a mentett belépést és a játék fájljait. Újra be kell jelentkezned.|Próbáld újra|A játék nem érhető el. Ellenőrizd az internetkapcsolatot.|Nincs alkalmazás ehhez a linkhez|A játék oldala összeomlott, újratöltöttük|A panelek visszakerültek a helyükre|Előbb nyisd meg a játékot|Az értesítésekhez engedély kell. A telefon beállításaiban adhatod meg.
+he|פעולה זו מוחקת את ההתחברות השמורה ואת קובצי המשחק. יהיה צורך להתחבר שוב.|נסו שוב|אין חיבור למשחק. בדקו את החיבור לאינטרנט.|אין אפליקציה שפותחת את הקישור|דף המשחק קרס ונטען מחדש|החלונות חזרו למקומם|פתחו קודם את המשחק|ההתראות דורשות הרשאה. אפשר לאשר בהגדרות הטלפון.
+it|Cancella l'accesso salvato e i file del gioco. Dovrai accedere di nuovo.|Riprova|Impossibile raggiungere il gioco. Controlla la connessione.|Nessuna app può aprire questo link|La pagina del gioco si è bloccata ed è stata ricaricata|I pannelli sono tornati al loro posto|Apri prima il gioco|Gli avvisi richiedono un permesso. Puoi concederlo nelle impostazioni del telefono.
+lt|Ištrins išsaugotą prisijungimą ir žaidimo failus. Reikės prisijungti iš naujo.|Bandyti dar kartą|Nepavyko pasiekti žaidimo. Patikrink interneto ryšį.|Jokia programėlė negali atverti nuorodos|Žaidimo puslapis užstrigo ir buvo įkeltas iš naujo|Langai grąžinti į vietas|Pirma atidaryk žaidimą|Pranešimams reikia leidimo. Suteik jį telefono nustatymuose.
+lv|Dzēš saglabāto pieteikšanos un spēles failus. Būs jāpiesakās vēlreiz.|Mēģināt vēlreiz|Neizdevās sasniegt spēli. Pārbaudi interneta savienojumu.|Neviena lietotne nevar atvērt saiti|Spēles lapa avarēja un tika pārlādēta|Paneļi ir savās vietās|Vispirms atver spēli|Paziņojumiem vajag atļauju. Piešķir to tālruņa iestatījumos.
+nl|Wist je opgeslagen login en spelbestanden. Je moet opnieuw inloggen.|Opnieuw proberen|Het spel is niet bereikbaar. Controleer je internetverbinding.|Geen app kan deze link openen|De spelpagina crashte en is herladen|De vensters staan weer op hun plek|Open eerst het spel|Meldingen hebben toestemming nodig. Geef die in de telefooninstellingen.
+no|Sletter lagret innlogging og spillfiler. Du må logge inn igjen.|Prøv igjen|Fikk ikke kontakt med spillet. Sjekk internettforbindelsen.|Ingen app kan åpne lenken|Spillsiden krasjet og ble lastet på nytt|Panelene er tilbake på plass|Åpne spillet først|Varsler krever tillatelse. Gi den i telefonens innstillinger.
+pl|Usuwa zapisane logowanie i pliki gry. Trzeba będzie zalogować się ponownie.|Spróbuj ponownie|Brak połączenia z grą. Sprawdź internet.|Żadna aplikacja nie otworzy tego linku|Strona gry uległa awarii i została przeładowana|Panele wróciły na miejsce|Najpierw otwórz grę|Powiadomienia wymagają zgody. Włącz ją w ustawieniach telefonu.
+pt|Apaga o login salvo e os arquivos do jogo. Será preciso entrar de novo.|Tentar de novo|Não foi possível acessar o jogo. Verifique sua conexão.|Nenhum app pode abrir este link|A página do jogo falhou e foi recarregada|Os painéis voltaram ao lugar|Abra o jogo primeiro|Os alertas precisam de permissão. Permita nas configurações do telefone.
+ro|Șterge autentificarea salvată și fișierele jocului. Va trebui să te conectezi din nou.|Încearcă din nou|Jocul nu poate fi accesat. Verifică internetul.|Nicio aplicație nu poate deschide linkul|Pagina jocului s-a blocat și a fost reîncărcată|Panourile sunt la locul lor|Deschide mai întâi jocul|Alertele au nevoie de permisiune. Acord-o din setările telefonului.
+ru|Будут удалены сохранённый вход и файлы игры. Потребуется войти снова.|Повторить|Нет связи с игрой. Проверьте интернет.|Нет приложения для этой ссылки|Страница игры упала и была перезагружена|Панели возвращены на место|Сначала откройте игру|Уведомлениям нужно разрешение. Дайте его в настройках телефона.
+sv|Tar bort sparad inloggning och spelfiler. Du måste logga in igen.|Försök igen|Kunde inte nå spelet. Kontrollera internetanslutningen.|Ingen app kan öppna länken|Spelsidan kraschade och laddades om|Panelerna är tillbaka på plats|Öppna spelet först|Aviseringar kräver behörighet. Ge den i telefonens inställningar.
+sl|Izbriše shranjeno prijavo in datoteke igre. Znova se boš moral prijaviti.|Poskusi znova|Igra ni dosegljiva. Preveri internetno povezavo.|Nobena aplikacija ne odpre te povezave|Stran igre se je sesula in je bila znova naložena|Okna so spet na mestu|Najprej odpri igro|Obvestila potrebujejo dovoljenje v nastavitvah telefona.
+sk|Vymaže uložené prihlásenie a súbory hry. Budeš sa musieť znova prihlásiť.|Skúsiť znova|Hra nie je dostupná. Skontroluj pripojenie k internetu.|Žiadna aplikácia neotvorí tento odkaz|Stránka hry spadla a bola načítaná znova|Panely sú späť na mieste|Najprv otvor hru|Upozornenia potrebujú povolenie v nastaveniach telefónu.
+tr|Kayıtlı girişini ve oyun dosyalarını siler. Yeniden giriş yapman gerekir.|Tekrar dene|Oyuna ulaşılamadı. İnternet bağlantını kontrol et.|Bu bağlantıyı açacak uygulama yok|Oyun sayfası çöktü ve yeniden yüklendi|Paneller yerlerine döndü|Önce oyunu aç|Uyarılar için bildirim izni gerekir. Telefon ayarlarından verebilirsin.
+zh|將刪除已儲存的登入與遊戲檔案，之後需要重新登入。|再試一次|無法連線至遊戲，請檢查網路連線。|沒有應用程式可開啟此連結|遊戲頁面當機，已重新載入|面板已恢復原位|請先開啟遊戲|提醒需要通知權限，可在手機設定中允許。
+sr|Briše sačuvanu prijavu i fajlove igre. Moraćeš ponovo da se prijaviš.|Pokušaj ponovo|Igra nije dostupna. Provjeri internet vezu.|Nijedna aplikacija ne otvara ovaj link|Stranica igre se srušila i ponovo je učitana|Prozori su na svojim mjestima|Prvo otvori igru|Obavještenja traže dozvolu u podešavanjima telefona.
+
+@|server|layout|thumb|classic|size|rotation|portrait|autoRotate|landscape|hideBar|awake|touch|editor|desktop|alerts
+en|Current server|Portrait layout|Thumb (default): controls at the bottom|Classic: game panel on top|Game size in landscape|Screen rotation|Portrait|Follow the phone|Landscape|Hide the status bar|Keep the screen on|Touch fixes (drag, hold = hover)|Big text editor in landscape|Desktop mode (full game)|News alerts (checked every minute, every server you are logged in to)
+ar|الخادم الحالي|التخطيط العمودي|تخطيط الإبهام (الافتراضي): الأزرار في الأسفل|الكلاسيكي: لوحة اللعبة في الأعلى|حجم اللعبة أفقيًا|اتجاه الشاشة|عمودي|حسب دوران الهاتف|أفقي|إخفاء شريط الحالة|إبقاء الشاشة مضاءة|تحسينات اللمس (السحب والضغط المطوّل)|محرر نص كبير أفقيًا|وضع سطح المكتب (اللعبة الكاملة)|تنبيهات الأخبار (فحص كل دقيقة لكل خادم سجّلت الدخول إليه)
+bg|Текущ сървър|Вертикално оформление|За палец (по подразбиране): бутони долу|Класическо: панел горе|Размер хоризонтално|Завъртане на екрана|Вертикално|Според телефона|Хоризонтално|Скрий лентата на състоянието|Екранът да остава включен|Подобрения за докосване|Голям редактор хоризонтално|Настолен режим|Известия (всяка минута, всеки сървър с активен вход)
+cs|Aktuální server|Rozložení na výšku|Pro palec (výchozí): ovládání dole|Klasické: panel nahoře|Velikost hry na šířku|Otáčení obrazovky|Na výšku|Podle telefonu|Na šířku|Skrýt stavový řádek|Nezhasínat obrazovku|Úpravy dotyku|Velký editor textu na šířku|Režim počítače|Upozornění (každou minutu, každý přihlášený server)
+de|Aktueller Server|Layout im Hochformat|Daumen (Standard): Bedienung unten|Klassisch: Spielleiste oben|Spielgröße im Querformat|Bildschirmdrehung|Hochformat|Wie das Handy|Querformat|Statusleiste ausblenden|Bildschirm anlassen|Touch-Anpassungen|Großer Texteditor im Querformat|Desktop-Modus|Nachrichten-Hinweise (jede Minute, für jeden Server mit Anmeldung)
+da|Aktuel server|Layout i højformat|Tommel (standard): knapper nederst|Klassisk: panel øverst|Spilstørrelse i bredformat|Skærmrotation|Højformat|Følg telefonen|Bredformat|Skjul statuslinjen|Hold skærmen tændt|Touchrettelser|Stor teksteditor i bredformat|Computertilstand|Notifikationer (hvert minut, hver server du er logget ind på)
+es|Servidor actual|Diseño vertical|Pulgar (predeterminado): controles abajo|Clásico: panel arriba|Tamaño en horizontal|Rotación de pantalla|Vertical|Según el teléfono|Horizontal|Ocultar la barra de estado|Mantener la pantalla encendida|Ajustes táctiles|Editor grande en horizontal|Modo escritorio|Avisos (cada minuto, cada servidor con sesión iniciada)
+fi|Nykyinen palvelin|Pystyasettelu|Peukalo (oletus): painikkeet alhaalla|Klassinen: paneeli ylhäällä|Pelin koko vaakatilassa|Näytön kierto|Pysty|Puhelimen mukaan|Vaaka|Piilota tilapalkki|Pidä näyttö päällä|Kosketuskorjaukset|Suuri tekstieditori vaakatilassa|Työpöytätila|Ilmoitukset (minuutin välein, kaikki kirjautuneet palvelimet)
+fr|Serveur actuel|Disposition portrait|Pouce (par défaut) : commandes en bas|Classique : panneau en haut|Taille du jeu en paysage|Rotation de l'écran|Portrait|Suivre le téléphone|Paysage|Masquer la barre d'état|Garder l'écran allumé|Corrections tactiles|Grand éditeur en paysage|Mode ordinateur|Alertes (chaque minute, chaque serveur connecté)
+el|Τρέχων διακομιστής|Κατακόρυφη διάταξη|Αντίχειρας (προεπιλογή): κουμπιά κάτω|Κλασική: πίνακας πάνω|Μέγεθος οριζόντια|Περιστροφή οθόνης|Κατακόρυφα|Όπως το τηλέφωνο|Οριζόντια|Απόκρυψη γραμμής κατάστασης|Οθόνη πάντα ανοιχτή|Βελτιώσεις αφής|Μεγάλος επεξεργαστής οριζόντια|Λειτουργία υπολογιστή|Ειδοποιήσεις (κάθε λεπτό, κάθε συνδεδεμένος διακομιστής)
+hu|Jelenlegi szerver|Álló elrendezés|Hüvelykujj (alap): gombok lent|Klasszikus: panel fent|Méret fekvő módban|Képernyő forgatása|Álló|Telefon szerint|Fekvő|Állapotsor elrejtése|Képernyő ébren tartása|Érintési javítások|Nagy szerkesztő fekvő módban|Asztali mód|Értesítések (percenként, minden szerveren, ahol be vagy lépve)
+he|השרת הנוכחי|פריסה לאורך|אגודל (ברירת מחדל): כפתורים למטה|קלאסי: הלוח למעלה|גודל המשחק לרוחב|סיבוב המסך|לאורך|לפי הטלפון|לרוחב|הסתרת שורת המצב|השארת המסך דולק|תיקוני מגע|עורך טקסט גדול לרוחב|מצב מחשב|התראות (כל דקה, בכל שרת מחובר)
+it|Server attuale|Layout verticale|Pollice (predefinito): comandi in basso|Classico: pannello in alto|Dimensione in orizzontale|Rotazione schermo|Verticale|Segui il telefono|Orizzontale|Nascondi la barra di stato|Schermo sempre acceso|Correzioni tocco|Editor grande in orizzontale|Modalità desktop|Avvisi (ogni minuto, ogni server con accesso attivo)
+lt|Dabartinis serveris|Vertikalus išdėstymas|Nykščiui (numatyta): mygtukai apačioje|Klasikinis: skydas viršuje|Dydis horizontaliai|Ekrano pasukimas|Vertikaliai|Pagal telefoną|Horizontaliai|Slėpti būsenos juostą|Neišjungti ekrano|Lietimo pataisos|Didelis redaktorius horizontaliai|Kompiuterio režimas|Pranešimai (kas minutę, visi prisijungti serveriai)
+lv|Pašreizējais serveris|Vertikālais izkārtojums|Īkšķim (noklusējums): pogas apakšā|Klasiskais: panelis augšā|Izmērs horizontāli|Ekrāna pagriešana|Vertikāli|Kā tālrunis|Horizontāli|Slēpt statusa joslu|Neizslēgt ekrānu|Pieskārienu labojumi|Liels redaktors horizontāli|Datora režīms|Paziņojumi (katru minūti, visi pieteiktie serveri)
+nl|Huidige server|Staande indeling|Duim (standaard): bediening onderaan|Klassiek: paneel bovenaan|Spelgrootte liggend|Schermrotatie|Staand|Volg de telefoon|Liggend|Statusbalk verbergen|Scherm aan houden|Aanraakverbeteringen|Grote teksteditor liggend|Desktopmodus|Meldingen (elke minuut, elke server waar je bent ingelogd)
+no|Gjeldende server|Oppsett i stående|Tommel (standard): knapper nederst|Klassisk: panel øverst|Størrelse i liggende|Skjermrotasjon|Stående|Følg telefonen|Liggende|Skjul statuslinjen|Hold skjermen på|Berøringsrettelser|Stor teksteditor i liggende|Datamaskinmodus|Varsler (hvert minutt, hver server du er logget inn på)
+pl|Bieżący serwer|Układ pionowy|Kciuk (domyślny): przyciski na dole|Klasyczny: panel u góry|Rozmiar w poziomie|Obracanie ekranu|Pionowo|Jak telefon|Poziomo|Ukryj pasek stanu|Nie wygaszaj ekranu|Poprawki dotyku|Duży edytor w poziomie|Tryb komputerowy|Powiadomienia (co minutę, każdy zalogowany serwer)
+pt|Servidor atual|Layout vertical|Polegar (padrão): controles embaixo|Clássico: painel em cima|Tamanho na horizontal|Rotação da tela|Vertical|Seguir o telefone|Horizontal|Ocultar a barra de status|Manter a tela ligada|Ajustes de toque|Editor grande na horizontal|Modo computador|Alertas (a cada minuto, cada servidor com sessão iniciada)
+ro|Server curent|Aspect portret|Degetul mare (implicit): butoane jos|Clasic: panou sus|Mărime în peisaj|Rotirea ecranului|Portret|După telefon|Peisaj|Ascunde bara de stare|Ține ecranul aprins|Corecții tactile|Editor mare în peisaj|Mod desktop|Alerte (în fiecare minut, fiecare server conectat)
+ru|Текущий сервер|Вертикальная раскладка|Под палец (по умолчанию): кнопки внизу|Классическая: панель вверху|Размер в альбомном режиме|Поворот экрана|Вертикально|Как телефон|Горизонтально|Скрыть строку состояния|Не выключать экран|Улучшения касаний|Большой редактор в альбомном режиме|Режим компьютера|Уведомления (каждую минуту, все серверы, где выполнен вход)
+sv|Aktuell server|Layout i stående|Tumme (standard): knappar nederst|Klassisk: panel överst|Spelstorlek i liggande|Skärmrotation|Stående|Följ telefonen|Liggande|Dölj statusfältet|Håll skärmen tänd|Pekförbättringar|Stor textredigerare i liggande|Datorläge|Aviseringar (varje minut, varje inloggad server)
+sl|Trenutni strežnik|Pokončna razporeditev|Palec (privzeto): gumbi spodaj|Klasična: plošča zgoraj|Velikost ležeče|Vrtenje zaslona|Pokončno|Kot telefon|Ležeče|Skrij vrstico stanja|Zaslon naj ostane vklopljen|Popravki dotika|Velik urejevalnik ležeče|Namizni način|Obvestila (vsako minuto, vsi prijavljeni strežniki)
+sk|Aktuálny server|Rozloženie na výšku|Pre palec (predvolené): ovládanie dole|Klasické: panel hore|Veľkosť na šírku|Otáčanie obrazovky|Na výšku|Podľa telefónu|Na šírku|Skryť stavový riadok|Nezhasínať obrazovku|Úpravy dotyku|Veľký editor na šírku|Režim počítača|Upozornenia (každú minútu, každý prihlásený server)
+tr|Geçerli sunucu|Dikey düzen|Başparmak (varsayılan): düğmeler altta|Klasik: panel üstte|Yatayda oyun boyutu|Ekran döndürme|Dikey|Telefonu izle|Yatay|Durum çubuğunu gizle|Ekranı açık tut|Dokunma düzeltmeleri|Yatayda büyük metin düzenleyici|Masaüstü modu|Bildirimler (her dakika, giriş yapılan her sunucu)
+zh|目前伺服器|直向版面|拇指版面（預設）：按鈕在下方|經典：面板在上方|橫向遊戲大小|螢幕旋轉|直向|跟隨手機|橫向|隱藏狀態列|保持螢幕開啟|觸控修正|橫向大型文字編輯器|電腦版模式|新聞提醒（每分鐘，所有已登入的伺服器）
+sr|Trenutni server|Uspravni raspored|Palac (podrazumijevano): dugmad dolje|Klasični: panel gore|Veličina položeno|Rotacija ekrana|Uspravno|Kao telefon|Položeno|Sakrij statusnu traku|Drži ekran uključen|Popravke dodira|Veliki uređivač položeno|Desktop režim|Obavještenja (svake minute, svi prijavljeni serveri)
+
+@|write|send|insert|keyboard|military|attack|towns|research|diplomacy|news|loginTitle|loginText
+en|Write text|Send|Insert|Page keyboard|Military|Red alert: possible attack. Tap to open.|Towns|Research|Diplomacy|There is news. Tap to open.|Ikariam: log in again|Alerts are paused: you were logged out, maybe by a PC. Reconnect logs in here and logs the PC out.
+ar|اكتب النص|إرسال|إدراج|لوحة مفاتيح الصفحة|الجيش|إنذار أحمر: هجوم محتمل. اضغط للفتح.|المدن|الأبحاث|الدبلوماسية|لديك أخبار جديدة. اضغط للفتح.|Ikariam: سجّل الدخول مجددًا|التنبيهات متوقفة: سُجّل خروجك، ربما من الحاسوب. إعادة الاتصال تُدخلك هنا وتُخرج الحاسوب.
+bg|Напиши текст|Изпрати|Вмъкни|Клавиатура|Армия|Червена тревога: възможна атака. Докосни.|Градове|Изследвания|Дипломация|Има новини. Докосни.|Ikariam: влез отново|Известията са на пауза: излязъл си, може би заради компютър. Свържи отново влиза тук и изключва компютъра.
+cs|Napiš text|Odeslat|Vložit|Klávesnice|Armáda|Červený poplach: možný útok. Klepni.|Města|Výzkum|Diplomacie|Máš novinky. Klepni.|Ikariam: přihlas se znovu|Upozornění pozastavena: byl jsi odhlášen, možná z PC. Znovu připojit tě přihlásí zde a odhlásí PC.
+de|Text schreiben|Senden|Einfügen|Seitentastatur|Militär|Roter Alarm: möglicher Angriff. Zum Öffnen tippen.|Städte|Forschung|Diplomatie|Es gibt Neuigkeiten. Zum Öffnen tippen.|Ikariam: neu anmelden|Hinweise pausiert: Du wurdest abgemeldet, evtl. durch einen PC. Neu verbinden meldet hier an und den PC ab.
+da|Skriv tekst|Send|Indsæt|Sidens tastatur|Militær|Rød alarm: muligt angreb. Tryk for at åbne.|Byer|Forskning|Diplomati|Der er nyt. Tryk for at åbne.|Ikariam: log ind igen|Notifikationer er på pause: du blev logget ud, måske af en pc. Genopret logger ind her og pc'en ud.
+es|Escribe|Enviar|Insertar|Teclado de la página|Militar|Alerta roja: posible ataque. Toca para abrir.|Ciudades|Investigación|Diplomacia|Hay novedades. Toca para abrir.|Ikariam: inicia sesión otra vez|Avisos en pausa: se cerró tu sesión, quizá por un PC. Reconectar la inicia aquí y la cierra en el PC.
+fi|Kirjoita|Lähetä|Lisää|Sivun näppäimistö|Armeija|Punainen hälytys: mahdollinen hyökkäys. Avaa napauttamalla.|Kaupungit|Tutkimus|Diplomatia|Uutisia. Avaa napauttamalla.|Ikariam: kirjaudu uudelleen|Ilmoitukset tauolla: sinut kirjattiin ulos, ehkä tietokoneelta. Yhdistä uudelleen kirjaa sisään täällä ja tietokoneen ulos.
+fr|Écrire|Envoyer|Insérer|Clavier de la page|Militaire|Alerte rouge : attaque possible. Touchez pour ouvrir.|Villes|Recherche|Diplomatie|Il y a du nouveau. Touchez pour ouvrir.|Ikariam : reconnectez-vous|Alertes en pause : vous avez été déconnecté, peut-être par un PC. Se reconnecter vous connecte ici et déconnecte le PC.
+el|Γράψε κείμενο|Αποστολή|Εισαγωγή|Πληκτρολόγιο σελίδας|Στρατός|Κόκκινος συναγερμός: πιθανή επίθεση.|Πόλεις|Έρευνα|Διπλωματία|Υπάρχουν νέα. Άγγιξε για άνοιγμα.|Ikariam: συνδέσου ξανά|Ειδοποιήσεις σε παύση: αποσυνδέθηκες, ίσως από υπολογιστή. Η επανασύνδεση σε συνδέει εδώ και αποσυνδέει τον υπολογιστή.
+hu|Írj szöveget|Küldés|Beszúrás|Oldal billentyűzete|Hadsereg|Vörös riadó: lehetséges támadás. Koppints.|Városok|Kutatás|Diplomácia|Hírek várnak. Koppints.|Ikariam: jelentkezz be újra|Az értesítések szünetelnek: kiléptettek, talán egy PC miatt. Az újracsatlakozás itt beléptet, a PC-n kiléptet.
+he|כתיבת טקסט|שליחה|הוספה|מקלדת הדף|צבא|התראה אדומה: ייתכן שמתקיימת התקפה. הקישו לפתיחה.|ערים|מחקר|דיפלומטיה|יש חדשות. הקישו לפתיחה.|Ikariam: התחברו שוב|ההתראות מושהות: נותקתם, אולי ממחשב. התחברות מחדש מחברת כאן ומנתקת את המחשב.
+it|Scrivi|Invia|Inserisci|Tastiera della pagina|Militare|Allarme rosso: possibile attacco. Tocca per aprire.|Città|Ricerca|Diplomazia|Ci sono novità. Tocca per aprire.|Ikariam: accedi di nuovo|Avvisi in pausa: sei stato disconnesso, forse da un PC. Riconnetti accede qui e disconnette il PC.
+lt|Rašyk tekstą|Siųsti|Įterpti|Puslapio klaviatūra|Kariuomenė|Raudonas pavojus: galima ataka. Paliesk.|Miestai|Tyrimai|Diplomatija|Yra naujienų. Paliesk.|Ikariam: prisijunk iš naujo|Pranešimai sustabdyti: buvai atjungtas, galbūt kompiuterio. Prisijungus iš naujo čia, kompiuteris bus atjungtas.
+lv|Raksti tekstu|Sūtīt|Ievietot|Lapas tastatūra|Armija|Sarkanā trauksme: iespējams uzbrukums. Pieskaries.|Pilsētas|Pētniecība|Diplomātija|Ir jaunumi. Pieskaries.|Ikariam: piesakies vēlreiz|Paziņojumi apturēti: tiki izrakstīts, varbūt no datora. Savienot vēlreiz piesaka šeit un atsaka datoru.
+nl|Schrijf tekst|Versturen|Invoegen|Paginatoetsenbord|Leger|Rood alarm: mogelijke aanval. Tik om te openen.|Steden|Onderzoek|Diplomatie|Er is nieuws. Tik om te openen.|Ikariam: log opnieuw in|Meldingen gepauzeerd: je bent uitgelogd, misschien door een pc. Opnieuw verbinden logt hier in en de pc uit.
+no|Skriv tekst|Send|Sett inn|Sidens tastatur|Militær|Rød alarm: mulig angrep. Trykk for å åpne.|Byer|Forskning|Diplomati|Det er nyheter. Trykk for å åpne.|Ikariam: logg inn igjen|Varsler er satt på pause: du ble logget ut, kanskje av en PC. Koble til igjen logger inn her og PC-en ut.
+pl|Napisz tekst|Wyślij|Wstaw|Klawiatura strony|Wojsko|Czerwony alarm: możliwy atak. Dotknij.|Miasta|Badania|Dyplomacja|Są nowości. Dotknij.|Ikariam: zaloguj się ponownie|Powiadomienia wstrzymane: wylogowano cię, może przez komputer. Połącz ponownie loguje tutaj i wylogowuje komputer.
+pt|Escreva|Enviar|Inserir|Teclado da página|Militar|Alerta vermelho: possível ataque. Toque para abrir.|Cidades|Pesquisa|Diplomacia|Há novidades. Toque para abrir.|Ikariam: entre novamente|Alertas em pausa: sua sessão terminou, talvez por um PC. Reconectar entra aqui e desconecta o PC.
+ro|Scrie text|Trimite|Inserează|Tastatura paginii|Armată|Alertă roșie: posibil atac. Atinge.|Orașe|Cercetare|Diplomație|Sunt noutăți. Atinge.|Ikariam: conectează-te din nou|Alerte în pauză: ai fost deconectat, poate de un PC. Reconectează te conectează aici și deconectează PC-ul.
+ru|Введите текст|Отправить|Вставить|Клавиатура страницы|Армия|Красная тревога: возможна атака. Нажмите.|Города|Исследования|Дипломатия|Есть новости. Нажмите.|Ikariam: войдите снова|Уведомления приостановлены: вход завершён, возможно, с компьютера. Повторное подключение выполнит вход здесь и выход на компьютере.
+sv|Skriv text|Skicka|Infoga|Sidans tangentbord|Militär|Rött larm: möjlig attack. Tryck för att öppna.|Städer|Forskning|Diplomati|Det finns nyheter. Tryck för att öppna.|Ikariam: logga in igen|Aviseringar pausade: du loggades ut, kanske av en dator. Återanslut loggar in här och ut datorn.
+sl|Napiši besedilo|Pošlji|Vstavi|Tipkovnica strani|Vojska|Rdeči alarm: možen napad. Tapni.|Mesta|Raziskave|Diplomacija|Novice čakajo. Tapni.|Ikariam: znova se prijavi|Obvestila so ustavljena: odjavljen si, morda zaradi računalnika. Znova poveži te prijavi tu in odjavi računalnik.
+sk|Napíš text|Odoslať|Vložiť|Klávesnica stránky|Armáda|Červený poplach: možný útok. Klepni.|Mestá|Výskum|Diplomacia|Máš novinky. Klepni.|Ikariam: prihlás sa znova|Upozornenia pozastavené: bol si odhlásený, možno z PC. Znova pripojiť ťa prihlási tu a odhlási PC.
+tr|Metin yaz|Gönder|Ekle|Sayfa klavyesi|Ordu|Kırmızı alarm: olası saldırı. Açmak için dokun.|Şehirler|Araştırma|Diplomasi|Yeni haberler var. Açmak için dokun.|Ikariam: yeniden giriş yap|Bildirimler durdu: oturumun kapandı, belki bir bilgisayardan. Yeniden bağlan burada açar, bilgisayarda kapatır.
+zh|輸入文字|傳送|插入|頁面鍵盤|軍事|紅色警報：可能遭到攻擊，點按開啟。|城市|研究|外交|有新消息，點按開啟。|Ikariam：請重新登入|提醒已暫停：你已被登出，可能是因為電腦登入。重新連線會在此登入並登出電腦。
+sr|Upiši tekst|Pošalji|Ubaci|Tastatura stranice|Vojska|Crveni alarm: moguć napad. Dodirni.|Gradovi|Istraživanje|Diplomatija|Ima novosti. Dodirni.|Ikariam: prijavi se ponovo|Obavještenja su pauzirana: odjavljen si, možda zbog računara. Poveži ponovo prijavljuje ovdje i odjavljuje računar.
+
+@|hTowns|hMenus|hPanels|hMap|hBack
+en|Towns: slide the town bar, or press the town beside the middle; it switches half a second after you stop. Press the town in the middle for the list and Edit order.|Menus: the two buttons beside the town bar show or hide Friends and the Town menu. They stay as you leave them.|Panels: drag them by the top bar. A long panel can hang down out of the way.|Map: drag to move, pinch or double-tap to zoom. Hold on anything to see the game's hover info.|Back: closes what is on top. With nothing open it shows the app menu (also under More).
+ar|المدن: مرّر شريط المدن أو اضغط المدينة المجاورة للوسط، وتُفتح بعد نصف ثانية من توقفك. اضغط المدينة في الوسط للقائمة وتعديل الترتيب.|القوائم: الزران بجانب شريط المدن يُظهران أو يخفيان الأصدقاء وقائمة المدينة، ويبقيان كما تركتهما.|اللوحات: اسحبها من شريطها العلوي، ويمكن إنزال اللوحة الطويلة بعيدًا.|الخريطة: اسحب للتحريك، وإصبعان أو ضغطتان للتكبير. اضغط مطولًا على أي شيء لمعلومات اللعبة.|الرجوع: يغلق ما في الأعلى، وإن لم يكن شيء مفتوحًا يعرض قائمة التطبيق (وهي أيضًا في المزيد).
+bg|Градове: плъзни лентата или натисни града до средния; сменя се след половин секунда. Натисни средния за списък и подредба.|Менюта: двата бутона до лентата показват или скриват приятели и менюто на града.|Панели: влачи ги за горната лента.|Карта: влачи за местене, щипни или докосни два пъти за мащаб. Задръж за информация.|Назад: затваря най-горното, иначе показва менюто на приложението.
+cs|Města: posuň lištu nebo klepni na město vedle středu; přepne se za půl sekundy. Klepni na prostřední pro seznam a pořadí.|Menu: dvě tlačítka vedle lišty ukážou nebo skryjí přátele a menu města.|Panely: táhni je za horní lištu.|Mapa: táhni pro posun, dvěma prsty či poklepáním přibliž. Podržením zobrazíš info.|Zpět: zavře vrchní okno, jinak zobrazí menu aplikace.
+de|Städte: Wische die Stadtleiste oder tippe auf die Stadt neben der Mitte; nach einer halben Sekunde Ruhe wird gewechselt. Tippe auf die Stadt in der Mitte für Liste und Reihenfolge.|Menüs: Die zwei Knöpfe neben der Stadtleiste zeigen oder verstecken Freunde und Stadtmenü.|Fenster: an der oberen Leiste ziehen. Lange Fenster dürfen unten heraushängen.|Karte: ziehen zum Bewegen, zwei Finger oder Doppeltippen zum Zoomen. Halten zeigt Infos.|Zurück: schließt das Oberste, sonst erscheint das App-Menü.
+da|Byer: stryg bybjælken eller tryk på byen ved siden af midten; skifter efter et halvt sekund. Tryk på den midterste for liste og rækkefølge.|Menuer: de to knapper ved bybjælken viser eller skjuler venner og bymenu.|Paneler: træk i den øverste bjælke.|Kort: træk for at flytte, knib eller dobbelttryk for zoom. Hold for info.|Tilbage: lukker det øverste, ellers vises app-menuen.
+es|Ciudades: desliza la barra o pulsa la ciudad junto al centro; cambia medio segundo después. Pulsa la del centro para la lista y el orden.|Menús: los dos botones junto a la barra muestran u ocultan amigos y menú de ciudad.|Paneles: arrástralos por la barra superior.|Mapa: arrastra para mover, pellizca o toca dos veces para ampliar. Mantén pulsado para ver info.|Atrás: cierra lo de arriba; si no hay nada, muestra el menú de la app.
+fi|Kaupungit: pyyhkäise palkkia tai napauta keskimmäisen viereistä; vaihtuu puolessa sekunnissa. Napauta keskimmäistä: lista ja järjestys.|Valikot: palkin vieressä olevat painikkeet näyttävät tai piilottavat ystävät ja kaupunkivalikon.|Paneelit: vedä yläpalkista.|Kartta: vedä, nipistä tai kaksoisnapauta. Pidä painettuna nähdäksesi tiedot.|Takaisin: sulkee päällimmäisen, muuten näyttää sovellusvalikon.
+fr|Villes : faites glisser la barre ou touchez la ville voisine du milieu ; le changement a lieu une demi-seconde après. Touchez la ville du milieu pour la liste et l'ordre.|Menus : les deux boutons près de la barre affichent ou masquent amis et menu ville.|Panneaux : faites-les glisser par leur barre supérieure.|Carte : glissez, pincez ou touchez deux fois pour zoomer. Maintenez pour les infos.|Retour : ferme ce qui est au-dessus, sinon affiche le menu de l'appli.
+el|Πόλεις: σύρε τη μπάρα ή πάτησε την πόλη δίπλα στη μεσαία· αλλάζει μισό δευτερόλεπτο μετά. Πάτησε τη μεσαία για λίστα και σειρά.|Μενού: τα δύο κουμπιά δίπλα στη γραμμή εμφανίζουν ή κρύβουν φίλους και μενού πόλης.|Πίνακες: σύρε από την επάνω γραμμή.|Χάρτης: σύρε, τσίμπησε ή διπλό άγγιγμα για ζουμ. Κράτα πατημένο για πληροφορίες.|Πίσω: κλείνει το επάνω, αλλιώς δείχνει το μενού εφαρμογής.
+hu|Városok: húzd a sávot, vagy koppints a középső melletti városra; fél másodperc múlva vált. A középsőre koppintva jön a lista és a sorrend.|Menük: a sáv melletti két gomb mutatja vagy rejti a barátokat és a városmenüt.|Panelek: a felső sávnál húzd.|Térkép: húzd, csípd vagy koppints duplán. Tartsd nyomva az infóért.|Vissza: bezárja a felsőt, különben az app menüt mutatja.
+he|ערים: החליקו את הסרגל או הקישו על העיר שליד האמצע; ההחלפה אחרי חצי שנייה. הקישו על האמצעית לרשימה ולסדר.|תפריטים: שני הכפתורים ליד הסרגל מציגים או מסתירים חברים ותפריט העיר.|חלונות: גררו מהסרגל העליון.|מפה: גררו להזזה, צביטה או הקשה כפולה לזום. החזיקו למידע.|חזרה: סוגר את העליון, אחרת מציג את תפריט האפליקציה.
+it|Città: scorri la barra o tocca la città accanto al centro; cambia mezzo secondo dopo. Tocca quella al centro per elenco e ordine.|Menu: i due pulsanti accanto alla barra mostrano o nascondono amici e menu città.|Pannelli: trascinali dalla barra in alto.|Mappa: trascina, pizzica o tocca due volte per lo zoom. Tieni premuto per le info.|Indietro: chiude ciò che è sopra, altrimenti mostra il menu dell'app.
+lt|Miestai: slink juostą arba spausk miestą šalia vidurinio; pasikeis po pusės sekundės. Spausk vidurinį sąrašui ir tvarkai.|Meniu: du mygtukai šalia juostos rodo arba slepia draugus ir miesto meniu.|Langai: tempk už viršutinės juostos.|Žemėlapis: tempk, suimk ar paliesk dukart. Palaikyk informacijai.|Atgal: uždaro viršutinį, kitaip rodo programėlės meniu.
+lv|Pilsētas: velc joslu vai spied pilsētu blakus vidējai; nomainās pēc pussekundes. Spied vidējo sarakstam un secībai.|Izvēlnes: divas pogas pie joslas rāda vai slēpj draugus un pilsētas izvēlni.|Paneļi: velc aiz augšējās joslas.|Karte: velc, saspied vai pieskaries divreiz. Turi informācijai.|Atpakaļ: aizver augšējo, citādi rāda lietotnes izvēlni.
+nl|Steden: veeg over de stadsbalk of tik op de stad naast het midden; na een halve seconde wisselt het. Tik op de middelste stad voor lijst en volgorde.|Menu's: de twee knoppen naast de balk tonen of verbergen vrienden en stadsmenu.|Vensters: sleep aan de bovenbalk.|Kaart: sleep, knijp of dubbeltik om te zoomen. Vasthouden toont info.|Terug: sluit het bovenste, anders verschijnt het app-menu.
+no|Byer: sveip byfeltet eller trykk på byen ved siden av midten; bytter etter et halvt sekund. Trykk på den i midten for liste og rekkefølge.|Menyer: de to knappene ved linjen viser eller skjuler venner og bymeny.|Paneler: dra i topplinjen.|Kart: dra, knip eller dobbelttrykk for zoom. Hold for info.|Tilbake: lukker det øverste, ellers vises appmenyen.
+pl|Miasta: przesuń pasek lub dotknij miasta obok środka; zmiana po pół sekundy. Dotknij środkowego, aby otworzyć listę i kolejność.|Menu: dwa przyciski obok paska pokazują lub chowają znajomych i menu miasta.|Panele: przeciągaj za górny pasek.|Mapa: przeciągaj, szczyp lub dotknij dwa razy. Przytrzymaj, by zobaczyć info.|Wstecz: zamyka wierzchnie, inaczej pokazuje menu aplikacji.
+pt|Cidades: deslize a barra ou toque na cidade ao lado do meio; muda meio segundo depois. Toque na do meio para a lista e a ordem.|Menus: os dois botões ao lado da barra mostram ou escondem amigos e menu da cidade.|Painéis: arraste pela barra de cima.|Mapa: arraste, belisque ou toque duas vezes para zoom. Segure para ver informações.|Voltar: fecha o que está por cima, senão mostra o menu do app.
+ro|Orașe: glisează bara sau apasă orașul de lângă mijloc; se schimbă după o jumătate de secundă. Apasă pe cel din mijloc pentru listă și ordine.|Meniuri: cele două butoane de lângă bară arată sau ascund prietenii și meniul orașului.|Panouri: trage de bara de sus.|Hartă: trage, ciupește sau atinge de două ori. Ține apăsat pentru informații.|Înapoi: închide ce e deasupra, altfel arată meniul aplicației.
+ru|Города: проведите по панели или нажмите город рядом с центром; переключение через полсекунды. Нажмите средний для списка и порядка.|Меню: две кнопки у полосы показывают или скрывают друзей и меню города.|Панели: тяните за верхнюю полосу.|Карта: тяните, сводите пальцы или нажмите дважды. Удерживайте для подсказок.|Назад: закрывает верхнее, иначе показывает меню приложения.
+sv|Städer: svep stadsfältet eller tryck på staden bredvid mitten; byter efter en halv sekund. Tryck på den i mitten för lista och ordning.|Menyer: de två knapparna bredvid fältet visar eller döljer vänner och stadsmeny.|Paneler: dra i den övre listen.|Karta: dra, nyp eller dubbeltryck. Håll för info.|Bakåt: stänger det översta, annars visas appmenyn.
+sl|Mesta: podrsaj po vrstici ali tapni mesto ob srednjem; zamenja se čez pol sekunde. Tapni srednje za seznam in vrstni red.|Meniji: gumba ob vrstici pokažeta ali skrijeta prijatelje in meni mesta.|Okna: vleci za zgornjo vrstico.|Zemljevid: vleci, uščipni ali tapni dvakrat. Pridrži za podatke.|Nazaj: zapre zgornje, sicer pokaže meni aplikacije.
+sk|Mestá: posuň lištu alebo ťukni na mesto vedľa stredu; prepne sa o pol sekundy. Ťukni na prostredné pre zoznam a poradie.|Menu: dve tlačidlá vedľa lišty ukážu alebo skryjú priateľov a menu mesta.|Panely: ťahaj za hornú lištu.|Mapa: ťahaj, dvoma prstami alebo poklepaním priblíž. Podržaním zobrazíš info.|Späť: zavrie vrchné, inak ukáže menu aplikácie.
+tr|Şehirler: çubuğu kaydır veya ortanın yanındaki şehre bas; yarım saniye sonra geçer. Liste ve sıralama için ortadakine bas.|Menüler: çubuğun yanındaki iki düğme arkadaşları ve şehir menüsünü gösterir ya da gizler.|Paneller: üst çubuktan sürükle.|Harita: sürükle, yakınlaştırmak için sıkıştır veya çift dokun. Bilgi için basılı tut.|Geri: üsttekini kapatır, yoksa uygulama menüsünü gösterir.
+zh|城市：滑動城市列或點按中間旁邊的城市，停止半秒後切換。點按中間的城市可開啟清單與排序。|選單：城市列兩旁的按鈕可顯示或隱藏好友與城市選單。|面板：拖曳上方列即可移動。|地圖：拖曳移動，雙指或點兩下縮放。長按顯示資訊。|返回：關閉最上層，否則顯示應用程式選單。
+sr|Gradovi: povuci traku ili dodirni grad pored srednjeg; mijenja se za pola sekunde. Dodirni srednji za listu i redoslijed.|Meniji: dva dugmeta pored trake prikazuju ili kriju prijatelje i meni grada.|Prozori: vuci za gornju traku.|Mapa: vuci, uštini ili dodirni dvaput. Drži za informacije.|Nazad: zatvara gornje, inače prikazuje meni aplikacije.
+
+@|defaultOrder|autoRetract|hQuick
+en|Default|City menu retracts by itself|Friends and Town menu buttons: press to show or hide, or slide up and let go on the one you want.
+ar|الافتراضي|قائمة المدينة تنطوي تلقائيًا|زرّا الأصدقاء وقائمة المدينة: اضغط للإظهار أو الإخفاء، أو اسحب للأعلى وارفع إصبعك عند ما تريد.
+bg|По подразбиране|Менюто на града се прибира само|Бутони Приятели и Меню на града: натисни за показване или скриване, или плъзни нагоре и пусни върху избраното.
+cs|Výchozí|Menu města se samo zasune|Tlačítka Přátelé a Menu města: klepni pro zobrazení či skrytí, nebo potáhni nahoru a pusť na položce.
+de|Standard|Stadtmenü klappt von selbst ein|Freunde und Stadtmenü: tippen zum Ein- oder Ausblenden, oder hochwischen und auf dem Gewünschten loslassen.
+da|Standard|Bymenuen trækker sig selv ind|Knapperne Venner og Bymenu: tryk for at vise eller skjule, eller stryg op og slip på dit valg.
+es|Predeterminado|El menú de ciudad se oculta solo|Botones Amigos y Menú de ciudad: pulsa para mostrar u ocultar, o desliza hacia arriba y suelta en el que quieras.
+fi|Oletus|Kaupunkivalikko sulkeutuu itsestään|Ystävät- ja Kaupunkivalikko-painikkeet: napauta näyttääksesi tai piilottaaksesi, tai pyyhkäise ylös ja päästä irti valinnan kohdalla.
+fr|Par défaut|Le menu ville se replie tout seul|Boutons Amis et Menu ville : touchez pour afficher ou masquer, ou glissez vers le haut et relâchez sur votre choix.
+el|Προεπιλογή|Το μενού πόλης κλείνει μόνο του|Κουμπιά Φίλοι και Μενού πόλης: πάτησε για εμφάνιση ή απόκρυψη, ή σύρε πάνω και άφησε σε αυτό που θέλεις.
+hu|Alapértelmezett|A városmenü magától becsukódik|Barátok és Város menü gomb: koppints a megjelenítéshez vagy elrejtéshez, vagy húzd felfelé, és engedd el a választottnál.
+he|ברירת מחדל|תפריט העיר נסגר מעצמו|כפתורי חברים ותפריט העיר: הקישו להצגה או הסתרה, או החליקו למעלה ושחררו על הרצוי.
+it|Predefinito|Il menu città si ritira da solo|Pulsanti Amici e Menu città: tocca per mostrare o nascondere, oppure scorri in alto e rilascia su quello che vuoi.
+lt|Numatyta|Miesto meniu susitraukia pats|Draugų ir Miesto meniu mygtukai: spausk rodyti ar slėpti, arba slink aukštyn ir paleisk ties norimu.
+lv|Noklusējums|Pilsētas izvēlne paslēpjas pati|Draugu un Pilsētas izvēlnes pogas: spied, lai rādītu vai slēptu, vai velc augšup un atlaid pie vajadzīgā.
+nl|Standaard|Stadsmenu klapt vanzelf in|Knoppen Vrienden en Stadsmenu: tik om te tonen of verbergen, of veeg omhoog en laat los op je keuze.
+no|Standard|Bymenyen trekker seg inn selv|Knappene Venner og Bymeny: trykk for å vise eller skjule, eller sveip opp og slipp på valget.
+pl|Domyślna|Menu miasta chowa się samo|Przyciski Przyjaciele i Menu miasta: dotknij, aby pokazać lub ukryć, albo przesuń w górę i puść na wybranym.
+pt|Padrão|O menu da cidade se recolhe sozinho|Botões Amigos e Menu da cidade: toque para mostrar ou ocultar, ou deslize para cima e solte no que quiser.
+ro|Implicit|Meniul orașului se retrage singur|Butoanele Prieteni și Meniu oraș: apasă pentru afișare sau ascundere, ori glisează în sus și eliberează pe cel dorit.
+ru|По умолчанию|Меню города сворачивается само|Кнопки «Друзья» и «Меню города»: нажмите, чтобы показать или скрыть, либо проведите вверх и отпустите на нужном.
+sv|Standard|Stadsmenyn fälls in själv|Knapparna Vänner och Stadsmeny: tryck för att visa eller dölja, eller svep uppåt och släpp på ditt val.
+sl|Privzeto|Meni mesta se sam skrije|Gumba Prijatelji in Meni mesta: tapni za prikaz ali skritje ali podrsaj navzgor in spusti na izbranem.
+sk|Predvolené|Menu mesta sa zasunie samo|Tlačidlá Priatelia a Menu mesta: ťukni pre zobrazenie či skrytie, alebo potiahni hore a pusť na položke.
+tr|Varsayılan|Şehir menüsü kendiliğinden kapanır|Arkadaşlar ve Şehir menüsü düğmeleri: göstermek veya gizlemek için bas ya da yukarı kaydırıp seçenekte bırak.
+zh|預設|城市選單自動收起|好友與城市選單按鈕：點按顯示或隱藏，或向上滑並在想要的項目上放開。
+sr|Podrazumijevano|Meni grada se sam uvlači|Dugmad Prijatelji i Meni grada: dodirni za prikaz ili skrivanje, ili povuci gore i pusti na stavci.
+
+@|switchServer|switchFailed
+en|Switch server|Couldn't switch. Press Play on the server here.
+ar|تبديل الخادم|تعذّر التبديل. اضغط «اللعب» على الخادم هنا.
+bg|Смяна на сървър|Смяната не успя. Натисни Играй при този сървър тук.
+cs|Změnit server|Přepnutí se nezdařilo. Stiskni zde u serveru Hrát.
+de|Server wechseln|Wechsel fehlgeschlagen. Drücke hier beim Server auf Spielen.
+da|Skift server|Skiftet mislykkedes. Tryk Spil ved serveren her.
+es|Cambiar de servidor|No se pudo cambiar. Pulsa Jugar en ese servidor aquí.
+fi|Vaihda palvelinta|Vaihto ei onnistunut. Paina tässä palvelimen Pelaa.
+fr|Changer de serveur|Changement impossible. Appuyez ici sur Jouer pour ce serveur.
+el|Αλλαγή διακομιστή|Η αλλαγή απέτυχε. Πάτησε Παίξε στον διακομιστή εδώ.
+hu|Szerverváltás|Nem sikerült váltani. Nyomd meg itt a szervernél a Játék gombot.
+he|החלפת שרת|ההחלפה נכשלה. לחצו כאן על שחק ליד השרת.
+it|Cambia server|Cambio non riuscito. Premi Gioca su quel server qui.
+lt|Keisti serverį|Pakeisti nepavyko. Čia prie serverio paspausk Žaisti.
+lv|Mainīt serveri|Nomaiņa neizdevās. Šeit pie servera spied Spēlēt.
+nl|Van server wisselen|Wisselen mislukt. Druk hier bij die server op Spelen.
+no|Bytt server|Kunne ikke bytte. Trykk Spill ved serveren her.
+pl|Zmień serwer|Nie udało się zmienić. Naciśnij tutaj Graj przy tym serwerze.
+pt|Mudar de servidor|Não foi possível mudar. Toque em Jogar nesse servidor aqui.
+ro|Schimbă serverul|Schimbarea nu a reușit. Apasă Joacă la acel server aici.
+ru|Сменить сервер|Не удалось переключиться. Нажмите здесь «Играть» у сервера.
+sv|Byt server|Det gick inte att byta. Tryck Spela vid servern här.
+sl|Zamenjaj strežnik|Menjava ni uspela. Tukaj pri strežniku pritisni Igraj.
+sk|Zmeniť server|Prepnutie zlyhalo. Stlač tu pri serveri Hrať.
+tr|Sunucu değiştir|Değiştirilemedi. Burada o sunucuda Oyna'ya bas.
+zh|切換伺服器|無法切換。請在此按下該伺服器的「開始遊戲」。
+sr|Promijeni server|Promjena nije uspjela. Ovdje kod servera pritisni Igraj.
+
+@|online|reconnect|sleepChecks
+en|online|Reconnect|Allow alerts while the phone sleeps
+ar|متصل الآن|إعادة الاتصال|السماح بالتنبيهات أثناء سكون الهاتف
+bg|онлайн|Свържи отново|Разреши известия, докато телефонът спи
+cs|online|Znovu připojit|Povolit upozornění při spánku telefonu
+de|online|Neu verbinden|Hinweise auch im Ruhezustand erlauben
+da|online|Genopret forbindelse|Tillad notifikationer mens telefonen sover
+es|en línea|Reconectar|Permitir avisos con el teléfono en reposo
+fi|paikalla|Yhdistä uudelleen|Salli ilmoitukset puhelimen nukkuessa
+fr|en ligne|Se reconnecter|Autoriser les alertes quand le téléphone dort
+el|συνδεδεμένοι|Επανασύνδεση|Ειδοποιήσεις και σε αναστολή του κινητού
+hu|online|Újracsatlakozás|Értesítések engedélyezése alvó telefonnál
+he|מחוברים|התחברות מחדש|לאפשר התראות כשהטלפון במצב שינה
+it|online|Riconnetti|Consenti avvisi a telefono in standby
+lt|prisijungę|Prisijungti iš naujo|Leisti pranešimus telefonui miegant
+lv|tiešsaistē|Savienot vēlreiz|Atļaut paziņojumus, kad tālrunis guļ
+nl|online|Opnieuw verbinden|Meldingen toestaan terwijl de telefoon slaapt
+no|pålogget|Koble til igjen|Tillat varsler mens telefonen sover
+pl|online|Połącz ponownie|Zezwól na powiadomienia w uśpieniu telefonu
+pt|online|Reconectar|Permitir alertas com o celular em repouso
+ro|online|Reconectează|Permite alertele când telefonul este inactiv
+ru|онлайн|Подключиться снова|Разрешить уведомления, пока телефон спит
+sv|online|Återanslut|Tillåt aviseringar när telefonen sover
+sl|na spletu|Znova poveži|Dovoli obvestila med spanjem telefona
+sk|online|Znova pripojiť|Povoliť upozornenia počas spánku telefónu
+tr|çevrimiçi|Yeniden bağlan|Telefon uykudayken bildirimlere izin ver
+zh|在線|重新連線|允許手機休眠時發出提醒
+sr|na mreži|Poveži ponovo|Dozvoli obavještenja dok telefon spava
+
+@|appSettings|backAgain|hBackThumb
+en|App settings|Press Back again to exit|Back: closes what is on top. With nothing open, press it twice to leave the app. The app's settings are under More > App settings.
+ar|إعدادات التطبيق|اضغط رجوع مرة أخرى للخروج|الرجوع: يغلق ما في الأعلى. إذا لم يكن شيء مفتوحًا فاضغطه مرتين للخروج من التطبيق. إعدادات التطبيق في المزيد > إعدادات التطبيق.
+bg|Настройки на приложението|Натисни Назад отново за изход|Назад: затваря най-горното. Когато нищо не е отворено, натисни го два пъти, за да излезеш. Настройките са в Още > Настройки на приложението.
+cs|Nastavení aplikace|Pro ukončení stiskni Zpět ještě jednou|Zpět: zavře, co je navrchu. Když nic není otevřené, dvojím stisknutím aplikaci ukončíš. Nastavení najdeš ve Více > Nastavení aplikace.
+de|App-Einstellungen|Zum Beenden erneut Zurück drücken|Zurück: schließt, was oben liegt. Ist nichts offen, zweimal drücken, um die App zu verlassen. Die Einstellungen findest du unter Mehr > App-Einstellungen.
+da|Appindstillinger|Tryk Tilbage igen for at afslutte|Tilbage: lukker det øverste. Når intet er åbent, tryk to gange for at forlade appen. Indstillingerne findes under Mere > Appindstillinger.
+es|Ajustes de la app|Pulsa Atrás otra vez para salir|Atrás: cierra lo que está encima. Sin nada abierto, púlsalo dos veces para salir de la app. Los ajustes están en Más > Ajustes de la app.
+fi|Sovelluksen asetukset|Poistu painamalla Takaisin uudelleen|Takaisin: sulkee päällimmäisen. Kun mitään ei ole auki, poistu sovelluksesta painamalla kahdesti. Asetukset löytyvät kohdasta Lisää > Sovelluksen asetukset.
+fr|Réglages de l'appli|Appuyez encore sur Retour pour quitter|Retour : ferme ce qui est au-dessus. Si rien n'est ouvert, appuyez deux fois pour quitter l'appli. Les réglages sont dans Plus > Réglages de l'appli.
+el|Ρυθμίσεις εφαρμογής|Πατήστε ξανά Πίσω για έξοδο|Πίσω: κλείνει ό,τι είναι από πάνω. Αν δεν είναι τίποτα ανοιχτό, πατήστε το δύο φορές για έξοδο. Οι ρυθμίσεις είναι στο Περισσότερα > Ρυθμίσεις εφαρμογής.
+hu|Alkalmazás beállításai|A kilépéshez nyomd meg újra a Vissza gombot|Vissza: bezárja a legfelsőt. Ha semmi sincs nyitva, kétszer megnyomva kilépsz az alkalmazásból. A beállítások: Több > Alkalmazás beállításai.
+he|הגדרות האפליקציה|לחצו שוב על חזרה כדי לצאת|חזרה: סוגר את מה שלמעלה. כששום דבר אינו פתוח, לחצו פעמיים כדי לצאת מהאפליקציה. ההגדרות נמצאות ב־עוד > הגדרות האפליקציה.
+it|Impostazioni app|Premi di nuovo Indietro per uscire|Indietro: chiude ciò che è in primo piano. Se non c'è nulla di aperto, premilo due volte per uscire dall'app. Le impostazioni sono in Altro > Impostazioni app.
+lt|Programėlės nustatymai|Paspauskite Atgal dar kartą, kad išeitumėte|Atgal: uždaro tai, kas viršuje. Kai niekas neatidaryta, paspauskite du kartus, kad išeitumėte. Nustatymai: Daugiau > Programėlės nustatymai.
+lv|Lietotnes iestatījumi|Lai izietu, vēlreiz nospiediet Atpakaļ|Atpakaļ: aizver augšējo. Ja nekas nav atvērts, nospiediet divreiz, lai izietu no lietotnes. Iestatījumi ir sadaļā Vairāk > Lietotnes iestatījumi.
+nl|App-instellingen|Druk nogmaals op Terug om af te sluiten|Terug: sluit wat bovenop ligt. Is er niets open, druk dan twee keer om de app te verlaten. De instellingen staan onder Meer > App-instellingen.
+no|Appinnstillinger|Trykk Tilbake igjen for å avslutte|Tilbake: lukker det øverste. Når ingenting er åpent, trykk to ganger for å gå ut av appen. Innstillingene finner du under Mer > Appinnstillinger.
+pl|Ustawienia aplikacji|Naciśnij Wstecz ponownie, aby wyjść|Wstecz: zamyka to, co jest na wierzchu. Gdy nic nie jest otwarte, naciśnij dwa razy, aby wyjść z aplikacji. Ustawienia są w Więcej > Ustawienia aplikacji.
+pt|Configurações do app|Toque em Voltar de novo para sair|Voltar: fecha o que está por cima. Sem nada aberto, toque duas vezes para sair do app. As configurações estão em Mais > Configurações do app.
+ro|Setările aplicației|Apasă din nou Înapoi pentru a ieși|Înapoi: închide ce este deasupra. Când nu e nimic deschis, apasă de două ori pentru a ieși din aplicație. Setările sunt în Mai mult > Setările aplicației.
+ru|Настройки приложения|Нажмите «Назад» ещё раз для выхода|«Назад» закрывает верхнее окно. Если ничего не открыто, нажмите дважды, чтобы выйти из приложения. Настройки — в «Ещё» > «Настройки приложения».
+sv|Appinställningar|Tryck Tillbaka igen för att avsluta|Tillbaka: stänger det som ligger överst. När inget är öppet, tryck två gånger för att lämna appen. Inställningarna finns under Mer > Appinställningar.
+sl|Nastavitve aplikacije|Za izhod znova pritisnite Nazaj|Nazaj: zapre, kar je na vrhu. Ko ni nič odprto, pritisnite dvakrat za izhod iz aplikacije. Nastavitve so v Več > Nastavitve aplikacije.
+sk|Nastavenia aplikácie|Na ukončenie stlačte Späť ešte raz|Späť: zavrie, čo je navrchu. Keď nie je nič otvorené, dvojitým stlačením aplikáciu ukončíte. Nastavenia sú vo Viac > Nastavenia aplikácie.
+tr|Uygulama ayarları|Çıkmak için tekrar Geri'ye basın|Geri: üstte olanı kapatır. Hiçbir şey açık değilse uygulamadan çıkmak için iki kez basın. Ayarlar: Daha fazla > Uygulama ayarları.
+zh|應用程式設定|再按一次返回鍵即可退出|返回：關閉最上層的內容。沒有開啟任何內容時，按兩次即可離開應用程式。設定位於「更多」>「應用程式設定」。
+sr|Podešavanja aplikacije|Pritisni Nazad ponovo za izlaz|Nazad: zatvara ono što je na vrhu. Kad ništa nije otvoreno, pritisni dvaput za izlaz iz aplikacije. Podešavanja su u Više > Podešavanja aplikacije.
+
+@|tutorial|tutorialAsk|watch|notNow|replay
+en|Touch controls tutorial|Watch a short video of the touch controls? You can also find it later in More > App settings.|Watch|Not now|Replay
+ar|شرح التحكم باللمس|هل تريد مشاهدة فيديو قصير يشرح التحكم باللمس؟ يمكنك أيضاً إيجاده لاحقاً في المزيد > إعدادات التطبيق.|مشاهدة|ليس الآن|إعادة
+bg|Урок за управлението с докосване|Искаш ли да гледаш кратко видео за управлението с докосване? Можеш да го намериш и по-късно в Още > Настройки на приложението.|Гледай|Не сега|Отначало
+cs|Návod k ovládání dotykem|Chceš se podívat na krátké video o ovládání dotykem? Najdeš ho i později ve Více > Nastavení aplikace.|Přehrát|Teď ne|Znovu
+de|Anleitung zur Touch-Steuerung|Möchtest du ein kurzes Video zur Touch-Steuerung sehen? Du findest es auch später unter Mehr > App-Einstellungen.|Ansehen|Nicht jetzt|Nochmal
+da|Vejledning i touch-styring|Vil du se en kort video om touch-styringen? Du kan også finde den senere under Mere > Appindstillinger.|Se den|Ikke nu|Afspil igen
+es|Tutorial de controles táctiles|¿Quieres ver un vídeo corto sobre los controles táctiles? También lo encontrarás más tarde en Más > Ajustes de la app.|Ver|Ahora no|Repetir
+fi|Kosketusohjauksen opas|Haluatko katsoa lyhyen videon kosketusohjauksesta? Löydät sen myöhemmin myös kohdasta Lisää > Sovelluksen asetukset.|Katso|Ei nyt|Toista uudelleen
+fr|Tutoriel des commandes tactiles|Voulez-vous voir une courte vidéo sur les commandes tactiles ? Vous la retrouverez aussi dans Plus > Réglages de l'appli.|Regarder|Plus tard|Revoir
+el|Οδηγός χειρισμού αφής|Θέλετε να δείτε ένα σύντομο βίντεο για τον χειρισμό με αφή; Θα το βρείτε και αργότερα στο Περισσότερα > Ρυθμίσεις εφαρμογής.|Προβολή|Όχι τώρα|Ξανά
+hu|Érintéses vezérlés bemutató|Megnézel egy rövid videót az érintéses vezérlésről? Később is megtalálod: Több > Alkalmazás beállításai.|Megnézem|Most nem|Újra
+he|מדריך שליטה במגע|לצפות בסרטון קצר על השליטה במגע? אפשר למצוא אותו גם אחר כך ב־עוד > הגדרות האפליקציה.|צפייה|לא עכשיו|שוב
+it|Tutorial dei comandi touch|Vuoi vedere un breve video sui comandi touch? Lo trovi anche più tardi in Altro > Impostazioni app.|Guarda|Non ora|Rivedi
+lt|Valdymo lietimu pamoka|Ar norite pažiūrėti trumpą vaizdo įrašą apie valdymą lietimu? Vėliau jį rasite ir skiltyje Daugiau > Programėlės nustatymai.|Žiūrėti|Ne dabar|Iš naujo
+lv|Skārienvadības pamācība|Vai vēlaties noskatīties īsu video par skārienvadību? To varēsiet atrast arī vēlāk sadaļā Vairāk > Lietotnes iestatījumi.|Skatīties|Ne tagad|Vēlreiz
+nl|Uitleg aanraakbediening|Wil je een korte video over de aanraakbediening bekijken? Je vindt hem later ook onder Meer > App-instellingen.|Bekijken|Niet nu|Opnieuw
+no|Veiledning for berøringskontroll|Vil du se en kort video om berøringskontrollene? Du finner den også senere under Mer > Appinnstillinger.|Se nå|Ikke nå|Spill av igjen
+pl|Samouczek sterowania dotykiem|Obejrzeć krótki film o sterowaniu dotykiem? Znajdziesz go też później w Więcej > Ustawienia aplikacji.|Obejrzyj|Nie teraz|Jeszcze raz
+pt|Tutorial dos controles de toque|Quer ver um vídeo curto sobre os controles de toque? Você também o encontra depois em Mais > Configurações do app.|Assistir|Agora não|Repetir
+ro|Tutorial pentru comenzile tactile|Vrei să vezi un scurt video despre comenzile tactile? Îl găsești și mai târziu în Mai mult > Setările aplicației.|Vizionează|Nu acum|Din nou
+ru|Обучение сенсорному управлению|Посмотреть короткое видео о сенсорном управлении? Его можно найти и позже: «Ещё» > «Настройки приложения».|Смотреть|Не сейчас|Ещё раз
+sv|Guide till pekstyrningen|Vill du se en kort video om pekstyrningen? Du hittar den också senare under Mer > Appinställningar.|Titta|Inte nu|Spela igen
+sl|Vodnik za upravljanje z dotikom|Želite pogledati kratek video o upravljanju z dotikom? Najdete ga tudi pozneje v Več > Nastavitve aplikacije.|Oglej si|Ne zdaj|Znova
+sk|Návod na ovládanie dotykom|Chcete si pozrieť krátke video o ovládaní dotykom? Nájdete ho aj neskôr vo Viac > Nastavenia aplikácie.|Pozrieť|Teraz nie|Znova
+tr|Dokunmatik kontroller rehberi|Dokunmatik kontrolleri anlatan kısa bir video izlemek ister misiniz? Daha sonra Daha fazla > Uygulama ayarları bölümünde de bulabilirsiniz.|İzle|Şimdi değil|Tekrar
+zh|觸控操作教學|要觀看一段介紹觸控操作的短片嗎？之後也可以在「更多」>「應用程式設定」中找到。|觀看|稍後再說|重播
+sr|Vodič za upravljanje dodirom|Želiš li da pogledaš kratak video o upravljanju dodirom? Možeš ga naći i kasnije u Više > Podešavanja aplikacije.|Pogledaj|Ne sada|Ponovo
+
+@|social|tutorialEnd
+en|Social|Press Back again to end the tutorial
+ar|التواصل|اضغط رجوع مرة أخرى لإنهاء الشرح
+bg|Общуване|Натисни Назад отново, за да спреш урока
+cs|Komunikace|Stiskni Zpět ještě jednou pro ukončení návodu
+de|Kontakte|Erneut Zurück drücken, um die Anleitung zu beenden
+da|Kontakt|Tryk Tilbage igen for at afslutte vejledningen
+es|Social|Pulsa Atrás otra vez para terminar el tutorial
+fi|Yhteisö|Lopeta opas painamalla Takaisin uudelleen
+fr|Social|Appuyez encore sur Retour pour quitter le tutoriel
+el|Επικοινωνία|Πατήστε ξανά Πίσω για να κλείσει ο οδηγός
+hu|Közösség|Nyomd meg újra a Vissza gombot a bemutató befejezéséhez
+he|קהילה|לחצו שוב על חזרה כדי לסיים את המדריך
+it|Social|Premi di nuovo Indietro per chiudere il tutorial
+lt|Bendravimas|Paspauskite Atgal dar kartą, kad baigtumėte pamoką
+lv|Saziņa|Nospiediet Atpakaļ vēlreiz, lai beigtu pamācību
+nl|Contact|Druk nogmaals op Terug om de uitleg te stoppen
+no|Kontakt|Trykk Tilbake igjen for å avslutte veiledningen
+pl|Społeczność|Naciśnij Wstecz ponownie, aby zakończyć samouczek
+pt|Social|Toque em Voltar de novo para sair do tutorial
+ro|Social|Apasă din nou Înapoi pentru a încheia tutorialul
+ru|Общение|Нажмите «Назад» ещё раз, чтобы закончить обучение
+sv|Socialt|Tryck Tillbaka igen för att avsluta guiden
+sl|Druženje|Znova pritisnite Nazaj za konec vodnika
+sk|Komunikácia|Stlačte Späť ešte raz na ukončenie návodu
+tr|Sosyal|Rehberi bitirmek için tekrar Geri'ye basın
+zh|社交|再按一次返回鍵即可結束教學
+sr|Druženje|Pritisni Nazad ponovo za kraj vodiča
+
+@|wheelBuzz
+en|Town bar vibration (notches while turning)
+ar|اهتزاز شريط المدن (نقرات أثناء التدوير)
+bg|Вибрация на лентата с градове (щраквания при въртене)
+cs|Vibrace pruhu měst (cvaknutí při otáčení)
+de|Vibration der Städteleiste (Rasten beim Drehen)
+da|Vibration i bybjælken (hak under drejning)
+es|Vibración de la barra de ciudades (muescas al girar)
+fi|Kaupunkipalkin värinä (naksahdukset pyörittäessä)
+fr|Vibration de la barre des villes (crans en tournant)
+el|Δόνηση μπάρας πόλεων (κλικ κατά την περιστροφή)
+hu|Városcsík rezgése (kattanások forgatáskor)
+he|רטט בסרגל הערים (נקישות בזמן הסיבוב)
+it|Vibrazione della barra delle città (scatti mentre gira)
+lt|Miestų juostos vibracija (spragtelėjimai sukant)
+lv|Pilsētu joslas vibrācija (klikšķi griežot)
+nl|Trillen van de stedenbalk (klikjes tijdens draaien)
+no|Vibrasjon i bylinjen (hakk mens den snurrer)
+pl|Wibracja paska miast (kliknięcia podczas obracania)
+pt|Vibração da barra de cidades (cliques ao girar)
+ro|Vibrația barei orașelor (clicuri la rotire)
+ru|Вибрация полосы городов (щелчки при прокрутке)
+sv|Vibration i stadsfältet (hack medan det snurrar)
+sl|Vibriranje vrstice mest (kliki med vrtenjem)
+sk|Vibrácie pruhu miest (cvaknutia pri otáčaní)
+tr|Şehir çubuğu titreşimi (döndürürken tıklar)
+zh|城市列滾動震動（轉動時的刻度感）
+sr|Vibracija trake gradova (klikovi pri okretanju)

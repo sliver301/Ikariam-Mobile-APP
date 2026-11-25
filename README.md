@@ -1,90 +1,111 @@
 <p align="center"><img src="docs/banner.jpg" width="100%" alt="Ikariam Mobile"></p>
 
+<p align="center"><b>English</b> &nbsp;|&nbsp; <a href="README.ar.md"><b>العربية</b></a></p>
+
 # <img src="docs/icon.png" width="40" align="center" alt=""> Ikariam Mobile
 
 An Android app for playing the browser game **Ikariam** comfortably on a phone, especially in portrait.
 
-It is a dedicated browser: it loads the real Ikariam website and only changes how the page is laid out and how touch
-input reaches it. It never clicks, sends or loads anything on its own; every game action comes from the player's own
-tap. It is an unofficial fan project and is not affiliated with Gameforge.
+It is a dedicated browser: it loads the real Ikariam website and only changes how the page is laid out and how
+touch reaches it. Every game action comes from your own tap. It is an unofficial fan project and is not affiliated
+with Gameforge.
+
+## Download
+
+**[Download the latest APK](https://github.com/sliver301/Ikariam-Mobile-APP/releases/latest)**, open it on your
+phone and allow installing from that app when Android asks. Android 12 or newer. Log in with your Gameforge account
+as usual and pick your server; the app remembers it.
+
+## Screenshots
+
+<p align="center">
+<img src="docs/screenshots/ar_1_city.jpg" width="30%" alt="City">
+<img src="docs/screenshots/ar_2_wheel.jpg" width="30%" alt="Town wheel">
+<img src="docs/screenshots/ar_3_social.jpg" width="30%" alt="Social column">
+</p>
+<p align="center">
+<img src="docs/screenshots/ar_4_window.jpg" width="30%" alt="A building window">
+<img src="docs/screenshots/ar_5_more.jpg" width="30%" alt="More">
+<img src="docs/screenshots/ar_6_settings.jpg" width="30%" alt="App settings">
+</p>
+
+<sub>On an Arabic server; the town and player names are made up. The app is mirrored and in English on English
+servers (see the video).</sub>
+
+## Touch tutorial videos
+
+<p align="center">
+<a href="https://github.com/sliver301/Ikariam-Mobile-APP/releases/download/v1.1/Ikariam-Mobile-tutorial-en.mp4"><img src="docs/screenshots/video_en.jpg" width="30%" alt="Tutorial video, English"></a>
+&nbsp;&nbsp;
+<a href="https://github.com/sliver301/Ikariam-Mobile-APP/releases/download/v1.1/Ikariam-Mobile-tutorial-ar.mp4"><img src="docs/screenshots/video_ar.jpg" width="30%" alt="Tutorial video, Arabic"></a>
+</p>
+<p align="center">English (left) and Arabic (right), 75 seconds each. The app also has the tutorial built in.</p>
 
 ## Features
 
-**Phone-first layout (portrait)**
-- Main panel (city / island / world, resources) at the top, the four advisors as a big panel at the bottom.
-- Game windows scaled to the screen width, opening under the main panel; the side box (upgrade button etc.) below.
-- Window text about 25% bigger; bigger side icons and top link row; the game's footer and shop timer removed.
-- Full screen, behind the status bar and camera cut-out.
+**Made for your thumb (portrait)**
+- A slim strip on top (gold, ships, Ambrosia, citizens, action points, resources, the server clock); the town bar,
+  City / Island / World / More and the advisors at the bottom, in reach of your thumb.
+- **Town wheel:** slide the town bar, or flick it to spin through your towns; it rests with one town in the middle
+  and never switches by itself. Tap the ringed town to go there at once. Your own town stays marked, and a tag above
+  the bar takes you back. Small notches can be felt while it turns (can be turned off).
+- **Town menu and Social** buttons: press to show or hide the column, or slide up and let go on the item you want.
+  In an alliance, Social holds the alliance chat and alliance message on top of your friends.
+- Game windows fill the screen's width; windows and side panels can be dragged by their top bar and remember where
+  you left them. The alliance chat is full width with text twice the game's size.
+- **More:** the shop, inventory, switch server (straight to any server you play on this phone), the game's links and
+  **App settings**: a window in the game's style with layout, rotation, the switches, reload, lobby, the tutorial
+  and more.
+- Any server, any language: the app follows the language you choose in the game's Options (27 languages), mirrored
+  for Arabic and Hebrew.
+- Town list > Edit order: your own town order, saved to the game's custom sorting so it applies everywhere.
+- A classic layout (game panel on top) and landscape are available too.
 
 **Touch controls**
-- Tap = click. Hold = mouse hover (shows the game's info, e.g. income on gold). Hold and move = drag.
-- City and island maps: one-finger pan kept inside the city / island, with extra room at the top to pull the top
-  buildings down to your thumb. Pinch or double-tap zooms the map only, never the bars.
-- Windows and side panels can be dragged by their title bar, and the app remembers where you left each one.
-- Two fingers inside a window (e.g. a battle report) zoom its content up to 4x around the fingers, inside the
-  window (the window and the rest of the app stay as they are). Zoomed content pans with one finger; a double-tap on
-  empty space resets it. Windows always open unzoomed.
-- Window lists scroll with a swipe (with a little fling).
-- Side menus: first tap expands an item, second tap opens it, a tap elsewhere collapses it.
-- Android Back closes the window / pop-up on top; with nothing open it shows the app menu
-  (settings, reload, lobby, help, log out, exit).
+- Tap = click. Hold = the game's hover info. Hold and move = drag.
+- Drag the city and island with one finger; pinch or double-tap zooms the map only, never the bars.
+- Two fingers inside a window (for example a battle report) zoom its content.
+- Number boxes open the number pad (always English digits).
+- Rearrange buildings: drag a building to a green place; Save saves, Back cancels.
+- Back closes what is on top; with nothing open, Back twice leaves the app.
 
 **News alerts (optional, on by default)**
-- While the app is closed, it checks every 15–30 minutes (varying) whether one of the four advisors
-  (towns, military, research, diplomacy) has news, and shows a notification; tapping it opens that advisor.
-- It is the same small, read-only request the open game page makes every minute (~7 KB), using the saved login.
-  Nothing in the game is changed. No check runs while the app is open. Turn it off in Settings.
-- Note: background requests may not be allowed by the game's rules; use at your own risk.
+- Every minute it checks each server you are logged in to for advisor news (towns, military, research, diplomacy)
+  and vibrates (no sound). Tap the alert to open that server at that advisor.
+- It never logs in by itself. If you were logged out (for example by playing on a PC), it says so once, with a
+  Reconnect button.
+- Note: background checks may not be allowed by the game's rules; use at your own risk. Turn them off in App
+  settings.
 
-**Other**
-- Login is kept between sessions; the Gameforge lobby's "Play" pop-up is handled.
-- Landscape mode is also supported (big native text editor for chat there).
+**Touch tutorial**
+- Offered once after installing, and always under More > App settings. It plays on a saved copy of a town (no
+  personal details), full screen, and cannot touch your account. Back twice ends it.
 
-## Project layout
+## For developers
 
 ```
-app/src/main/java/com/islam/ikariamtouch/   Android side (WebView, back button, menu, settings)
-app/src/main/assets/enhance.js               Page script: layout, touch handling, map camera
-art/                                         Scripts to build an AI-extended city background
+app/src/main/java/com/islam/ikariamtouch/   Android side (WebView, back button, settings, alerts, tutorial)
+app/src/main/assets/enhance.js               Page script: layout, touch handling, map camera, town wheel
+app/src/main/assets/i18n.txt                 The app's own words in every language
+app/src/main/assets/tutorial/                The tutorial's captions (its saved town is built locally)
+art/                                         Scripts to build the extended city background
 build.bat                                    Local build script
-build_public.bat                             Build for public release (without the local city background)
 ```
 
-## Install
+Requirements: JDK 17+ (Android Studio's bundled JBR works), Android SDK (compileSdk 37), Gradle 9.6. Run
+`gradle assembleDebug` or edit the paths in `build.bat`; the APK is written to
+`app/build/outputs/apk/debug/app-debug.apk`.
 
-Download the APK from [Releases](https://github.com/sliver301/Ikariam-Mobile-APP/releases), open it on the phone and
-allow installing from that app when Android asks. Android 12 or newer.
+The game's own pictures and pages are not in this repository: the extended city background
+(`app/src/main/assets/art/`) and the tutorial's saved town (`app/src/main/assets/tutorial/tut_*.html`) are built
+locally from a running game, and a build without them falls back to a mirrored city edge and the written help. The
+release APK includes them.
 
-## Building
+**Extended city background:** with the app running on a phone (USB debugging), collect the city's ground tiles into
+`art/source/`, run `art/make_gemini_inputs.ps1`, have an image model fill the grey area upward, save the result in
+`art/generated/` and install it with `art/install_generated.ps1 -Picture art/generated/<file>`.
 
-Requirements: JDK 17+ (Android Studio's bundled JBR works), Android SDK (compileSdk 37), Gradle 9.6.
-
-```
-gradle assembleDebug
-```
-
-or edit the paths in `build.bat` and run it. The APK is written to `app/build/outputs/apk/debug/app-debug.apk`.
-`build_public.bat` builds `IkariamMobile-public.apk` without the local extended city background (see below), from
-a fresh APK file so none of that picture remains in it.
-
-## Extended city background (optional)
-
-When the city is pulled down, the area above it shows extra ground. By default this is a mirrored copy of the city's
-top edge. A nicer, AI-generated extension can be added locally (the game's images are not included in this repo):
-
-1. With the app running on a phone (USB debugging), collect the city's ground tiles into `art/source/`
-   (see `art/source/urls.json` format in `art/install_generated.ps1`).
-2. `art/make_gemini_inputs.ps1` builds `art/for_gemini/canvas_extend_up_grey.png`.
-3. Ask an image model to fill the grey area by extending the landscape upward; save the result in `art/generated/`.
-4. `art/install_generated.ps1 -Picture art/generated/<file>` installs it into the app; rebuild.
-
-All city layouts (phases 1–5, normal and capital) share the same top edge, so one picture covers every city; the
-installer registers all of them (from `art/source/layouts/layouts.json`).
-
-## App icon
-
-The icon is original artwork (not taken from the game).
-`art/make_icon.py` (Python + Pillow) turns `art/icon_source.png` into the adaptive-icon foreground and `docs/icon.png`.
+The app icon is original artwork (`art/make_icon.py` builds it from `art/icon_source.png`).
 
 ## Disclaimer
 

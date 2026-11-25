@@ -1,6 +1,7 @@
 package com.islam.ikariamtouch
 
 import android.app.AlertDialog
+import android.os.LocaleList
 import android.text.Editable
 import android.text.InputFilter
 import android.text.InputType
@@ -8,10 +9,12 @@ import android.text.TextWatcher
 import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
+import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import org.json.JSONObject
+import java.util.Locale
 
 /**
  * Big native text editor that replaces the game's tiny text boxes on a phone.
@@ -32,7 +35,11 @@ object Composer {
             textDirection = View.TEXT_DIRECTION_FIRST_STRONG   // Arabic shows right-to-left automatically
             textSize = 18f
             when {
-                numeric -> inputType = InputType.TYPE_CLASS_NUMBER
+                numeric -> {
+                    inputType = InputType.TYPE_CLASS_NUMBER
+                    imeOptions = imeOptions or EditorInfo.IME_FLAG_FORCE_ASCII
+                    imeHintLocales = LocaleList(Locale.US)
+                }
                 multiline -> {
                     inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE or
                         InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
@@ -67,25 +74,21 @@ object Composer {
             box.addView(counter, LinearLayout.LayoutParams(MATCH, WRAP))
         }
 
-        val title = when {
-            hint.isNotEmpty() -> hint.take(60)
-            numeric -> "Enter amount"
-            multiline -> "Write message"
-            else -> "Write text"
-        }
+        val title = if (hint.isNotEmpty()) hint.take(60) else act.word("write")
 
         val b = AlertDialog.Builder(act).setTitle(title).setView(box)
         if (multiline || numeric) {
-            b.setPositiveButton("Done") { _, _ -> act.fillField(id, edit.text.toString(), send = false) }
-            b.setNeutralButton("Page keyboard") { _, _ -> act.focusFieldRaw(id) }
+            b.setPositiveButton(act.word("insert")) { _, _ -> act.fillField(id, edit.text.toString(), send = false) }
+            b.setNeutralButton(act.word("keyboard")) { _, _ -> act.focusFieldRaw(id) }
         } else {
-            b.setPositiveButton("Send") { _, _ -> act.fillField(id, edit.text.toString(), send = true) }
-            b.setNeutralButton("Insert") { _, _ -> act.fillField(id, edit.text.toString(), send = false) }
+            b.setPositiveButton(act.word("send")) { _, _ -> act.fillField(id, edit.text.toString(), send = true) }
+            b.setNeutralButton(act.word("insert")) { _, _ -> act.fillField(id, edit.text.toString(), send = false) }
         }
-        b.setNegativeButton("Cancel", null)
+        b.setNegativeButton(act.word("cancel"), null)
 
         val dialog = b.create()
         dialog.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
+        dialog.useGameDirection()
         dialog.show()
         edit.requestFocus()
     }

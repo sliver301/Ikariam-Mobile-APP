@@ -94,6 +94,14 @@ if (Test-Path $layoutsFile) {
 $entries = foreach ($pair in $pairs) {
     @{ tiles = $pair; file = $file; side = $SIDE; width = $W; ext = $edge; overlap = $OVERLAP }
 }
+# Left-to-right servers show the mirror image of every layout: the same picture, flipped.
+$ltrFile = Join-Path $art 'source\layouts\layouts_ltr.json'
+if (Test-Path $ltrFile) {
+    $ltr = Get-Content $ltrFile -Raw | ConvertFrom-Json
+    $entries = @($entries) + @(foreach ($pair in $ltr) {
+        @{ tiles = @($pair); file = $file; side = $SIDE; width = $W; ext = $edge; overlap = $OVERLAP; flip = $true }
+    })
+}
 $manifest = @{ cityTop = @($entries) }
 "Layouts covered: $($pairs.Count)"
 $manifest | ConvertTo-Json -Depth 5 | Set-Content (Join-Path $assets 'manifest.json') -Encoding ascii

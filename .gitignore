@@ -15,3 +15,6 @@ art/source/
 art/for_gemini/
 art/generated/
 app/src/main/assets/art/
+
+# The touch tutorial's saved town (the game's page and styles): in release builds, not in the repo.
+app/src/main/assets/tutorial/tut_*.html
