@@ -16,6 +16,10 @@ with Gameforge.
 phone and allow installing from that app when Android asks. Android 12 or newer. Log in with your Gameforge account
 as usual and pick your server; the app remembers it.
 
+**Updates:** the app checks this page when it opens and offers to download and install a newer release for you.
+Version numbers follow the game: app 1.17.6.1 is made for game version 17.6.1. When the game moves to a new version,
+the app tells you once, in case something looks different until the app catches up.
+
 ## Screenshots
 
 <p align="center">
@@ -47,7 +51,7 @@ servers (see the video).</sub>
 - A slim strip on top (gold, ships, Ambrosia, citizens, action points, resources, the server clock); the town bar,
   City / Island / World / More and the advisors at the bottom, in reach of your thumb.
 - **Town wheel:** slide the town bar, or flick it to spin through your towns; it rests with one town in the middle
-  and never switches by itself. Tap the ringed town to go there at once. Your own town stays marked, and a tag above
+  and never switches by itself. Tap the ringed town, or the town just beside it, to go there at once. Your own town stays marked, and a tag above
   the bar takes you back. Small notches can be felt while it turns (can be turned off).
 - **Town menu and Social** buttons: press to show or hide the column, or slide up and let go on the item you want.
   In an alliance, Social holds the alliance chat and alliance message on top of your friends.
@@ -62,10 +66,12 @@ servers (see the video).</sub>
 - A classic layout (game panel on top) and landscape are available too.
 
 **Touch controls**
-- Tap = click. Hold = the game's hover info. Hold and move = drag.
+- Tap = click. Hold = the game's hover info (on gold or a resource it shows large, just above the town bar; any
+  touch or Back closes it). Hold and move = drag.
+- The island view and the world map open with your town / island in the middle of the screen.
 - Drag the city and island with one finger; pinch or double-tap zooms the map only, never the bars.
 - Two fingers inside a window (for example a battle report) zoom its content.
-- Number boxes open the number pad (always English digits).
+- Number boxes open the number pad (always English digits), with the cursor after the last digit.
 - Rearrange buildings: drag a building to a green place; Save saves, Back cancels.
 - Back closes what is on top; with nothing open, Back twice leaves the app.
 

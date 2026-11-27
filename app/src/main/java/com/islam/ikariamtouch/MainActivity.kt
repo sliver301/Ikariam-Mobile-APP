@@ -93,6 +93,8 @@ class MainActivity : Activity() {
 
         buildUi()
         tutorial = Tutorial(this, webHolder)
+        // a newer version on GitHub? (once each time the app starts; nothing is downloaded unless the player says yes)
+        if (savedInstanceState == null) Updater.check(this) { offerUpdate(it) }
         // the old video tutorial's copies (it is a saved page now)
         cacheDir.listFiles()?.filter { it.name.startsWith("tutorial_") && it.name.endsWith(".mp4") }?.forEach { it.delete() }
         applyWindowPrefs()
@@ -116,6 +118,7 @@ class MainActivity : Activity() {
         super.onResume()
         web.onResume()
         NewsChecker.appVisible = true
+        pendingUpdate?.let { if (Updater.mayInstall(this)) { pendingUpdate = null; startUpdate(it) } }
         NewsChecker.start(this)               // exact from now on, if the player has just allowed it
         main.removeCallbacks(watchdog)
         main.postDelayed(watchdog, WATCH_MS)
@@ -860,6 +863,12 @@ class MainActivity : Activity() {
             }
         }
 
+        /** The live game's version, from its own row of links (e.g. "17.6.1"). */
+        @JavascriptInterface
+        fun gameVersion(v: String) {
+            runOnUiThread { if (onGameServer) checkGameVersion(v.trim()) }
+        }
+
         /** The town wheel turned a notch: a tiny tick, or a firmer one as a town reaches the middle. */
         @JavascriptInterface
         fun notch(strong: Boolean) {
@@ -1180,6 +1189,44 @@ class MainActivity : Activity() {
         flag("desktop") { prefs.desktopMode = it }
         flag("alerts") { prefs.newsAlerts = it }
         settingsSaved(ua != prefs.desktopMode)
+    }
+
+    // ------------------------------------------------------------------ versions and updates
+
+    /** The live game is another version than the one this app was made for: say so, once per version. */
+    private fun checkGameVersion(live: String) {
+        val target = Updater.gameTarget(this)
+        if (live.isEmpty() || target.isEmpty() || live == target || prefs.warnedGameVersion == live) return
+        prefs.warnedGameVersion = live
+        AlertDialog.Builder(this)
+            .setTitle("Ikariam $live")
+            .setMessage(word("gameUpdated").replace("%1", live).replace("%2", target))
+            .setPositiveButton(word("close"), null)
+            .showLocalized()
+    }
+
+    /** A pending update waiting for the player to allow installs in Android's settings. */
+    private var pendingUpdate: Updater.Release? = null
+
+    private fun offerUpdate(r: Updater.Release) {
+        if (isFinishing) return
+        AlertDialog.Builder(this)
+            .setTitle(word("updateTitle"))
+            .setMessage(word("updateText").replace("%1", r.version))
+            .setPositiveButton(word("updateNow")) { _, _ -> startUpdate(r) }
+            .setNegativeButton(word("notNow"), null)
+            .showLocalized()
+    }
+
+    private fun startUpdate(r: Updater.Release) {
+        if (!Updater.mayInstall(this)) {
+            pendingUpdate = r                     // carried on once the player is back from Android's settings
+            toast(word("allowInstall"))
+            Updater.askToAllow(this)
+            return
+        }
+        toast(word("downloading"))
+        Updater.install(this, r) { toast(word("updateFailed")) }
     }
 
     /** After either settings screen saved: apply everything. */

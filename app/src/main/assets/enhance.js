@@ -24,7 +24,7 @@
     return {
       openAppSettings: function () { setTimeout(function () { if (cfg.demoSettings) api.appSettings(cfg.demoSettings); }, 0); },
       switchServer: none, pickServer: none, appAction: none, saveSettings: none, compose: none,
-      menus: none, page: none, seen: none, alive: none, tick: none, haptic: none
+      menus: none, page: none, seen: none, alive: none, tick: none, haptic: none, notch: none, gameVersion: none
     };
   }
   var GAME_HOST = DEMO || /^s\d+-[a-z]+\.ikariam\.gameforge\.com$/i.test(location.hostname);
@@ -397,6 +397,24 @@
     hovered = el;
   }
 
+  // Thumb: the hover info grows to the town bar's width (as much as fits above it) and sits just
+  // above the town bar, the same gap as everything else, so the thumb does not cover it.
+  function tipFit() {
+    if (!isThumb()) return;
+    var tip = Array.prototype.filter.call(document.querySelectorAll('.infoTip'), function (e) { return e.offsetWidth; })[0];
+    var bar = document.getElementById('ikm-town');
+    if (!tip || !bar) return;
+    var br = bar.getBoundingClientRect(), top = 0;
+    Array.prototype.forEach.call(document.querySelectorAll('[id^="js_GlobalMenu_"]'), function (e) {
+      var r = e.getBoundingClientRect();
+      if (r.height && r.top < window.innerHeight / 3) top = Math.max(top, r.bottom);
+    });
+    var k = Math.min(br.width / tip.offsetWidth, (br.top - PANEL_GAP - top - PANEL_GAP) / tip.offsetHeight);
+    var root = document.documentElement.style;
+    root.setProperty('--ikm-tipk', Math.max(1, k).toFixed(3));
+    root.setProperty('--ikm-tipb', Math.round(window.innerHeight - br.top + PANEL_GAP) + 'px');
+  }
+
   function longPress() {
     if (!g || g.mode !== 'pending') return;
     if (g.lift) { liftBuilding(g.x, g.y); return; }     // rearranging: held = picked up
@@ -404,6 +422,9 @@
     g.mode = 'hover';
     hoverAt(g.x, g.y);
     mouse('mousemove', g.x, g.y, null, 0);
+    tipFit();
+    setTimeout(tipFit, 60);
+    setTimeout(tipFit, 300);
     if (A && A.haptic) A.haptic();
   }
 
@@ -534,7 +555,63 @@
     if (!view || !wm) { cam.key = ''; return; }
     if (!wm.hasAttribute('data-ikm-cam')) wm.setAttribute('data-ikm-cam', String(++camSeq));
     var key = view + ':' + wm.getAttribute('data-ikm-cam');
-    if (key !== cam.key) { cam.key = key; camReset(); }
+    if (key !== cam.key) {
+      cam.key = key;
+      camReset();
+      focus = view === 'city' ? null : { view: view, key: key, until: performance.now() + 6000 };
+    }
+    if (focus) mapFocus();
+  }
+
+  // A map just opened: the player's own town (island) or island (world map) goes to the middle of
+  // the map area. The game centres it in its 1024 px frame, which is wider than the phone's screen,
+  // so it ended up at the side or off the screen. Given up once the player touches the map.
+  var focus = null;
+  function mapMiddle() {
+    var top = 0;
+    Array.prototype.forEach.call(document.querySelectorAll('[id^="js_GlobalMenu_"]'), function (e) {
+      var r = e.getBoundingClientRect();
+      if (r.height && r.top < window.innerHeight / 3) top = Math.max(top, r.bottom);
+    });
+    var bar = document.getElementById('ikm-town'), br = bar && bar.getBoundingClientRect();
+    var bottom = br && br.height ? br.top : window.innerHeight - (isThumb() ? DOCK_TOP : 90);
+    return { x: window.innerWidth / 2, y: (top + bottom) / 2 };
+  }
+  function focusSpot(view) {
+    if (view === 'world') return document.querySelector('#worldmap .islandMarked');
+    var id = currentTownId(), name = '';
+    try { name = String(ikariam.model.relatedCityData['city_' + id].name || ''); } catch (e) { /* by id only */ }
+    var spots = document.querySelectorAll('#worldmap .cityLocation.own:not(.cityLocationScroll)');
+    for (var i = 0; i < spots.length; i++) {
+      var s = spots[i];
+      if (id && s.innerHTML.indexOf('cityId=' + id) >= 0) return s;
+      var label = document.getElementById(s.id + 'Scroll');
+      if (name && label && label.textContent.trim() === name) return s;
+    }
+    return null;
+  }
+  function mapFocus() {
+    if (performance.now() > focus.until || g) { focus = null; return; }
+    var spot = focusSpot(focus.view), r = spot && spot.getBoundingClientRect();
+    if (!r || !r.width) return;                       // not drawn yet: next time
+    var m = mapMiddle(), dx = m.x - (r.left + r.right) / 2, dy = m.y - (r.top + r.bottom) / 2;
+    focus = null;
+    if (Math.abs(dx) < 4 && Math.abs(dy) < 4) return;
+    if (camView() === 'world') {
+      // the game moves the world map (and loads its tiles): drag it, as a finger would
+      var steps = Math.ceil(Math.max(Math.abs(dx) / (window.innerWidth * 0.8), Math.abs(dy) / (window.innerHeight * 0.5), 1));
+      for (var k = 0; k < steps; k++) {
+        var sx = m.x - dx / steps / 2, sy = m.y - dy / steps / 2;
+        mouse('mousedown', sx, sy, null, 1);
+        for (var j = 1; j <= 4; j++) mouse('mousemove', sx + dx / steps * j / 4, sy + dy / steps * j / 4, null, 1);
+        mouse('mouseup', sx + dx / steps, sy + dy / steps, null, 0);
+      }
+      return;
+    }
+    cam.tx += dx;
+    cam.ty += dy;
+    camClamp();
+    camApply();
   }
   // Zoom to z2 keeping the map point under screen point (mx, my) where it is.
   function camZoomAt(z2, mx, my, anchor) {
@@ -682,8 +759,8 @@
       g = null;
       return;
     }
+    if (hovered) clearHover();                 // any touch ends the hover info (also a touch on it)
     if (isEditable(target)) { g = null; return; }
-    if (hovered && !hovered.contains(target)) clearHover();
     var map = onMap(target);
     var box = map ? null : customScroller(target);
     g = {
@@ -1096,6 +1173,18 @@
     el.setAttribute('lang', 'en');
     el.setAttribute('autocomplete', 'off');
   }
+  function caretEnd(el) {
+    var go = function () {
+      if (document.activeElement !== el) return;
+      try {
+        var n = el.value.length;
+        if (el.selectionStart !== n || el.selectionEnd !== n) el.setSelectionRange(n, n);
+      } catch (err) { /* type=number has no caret to place */ }
+    };
+    go();
+    setTimeout(go, 0);
+    setTimeout(go, 90);
+  }
   function markNumbers() {
     Array.prototype.forEach.call(document.querySelectorAll('.templateView input, #sidebar input, .popupMessage input, #multiPopup input'), function (el) {
       if (el !== document.activeElement) markNumber(el);
@@ -1242,6 +1331,7 @@
   }
   var closeTopByX = api.closeTop;
   api.closeTop = function () {
+    if (hovered) { clearHover(); return true; }  // a hover info shown by a long press
     if (closeAppSettings() || closeSheet() || slideCancel()) return true;
     if (closeTransport()) return true;         // it lies over the windows
     if (autoOpen) { retractAuto(); return true; }
@@ -1388,6 +1478,11 @@
       T + '#header #advisors ul { margin: 0' + I + ' }',
       // side buttons down in thumb reach (the top is set by thumbLayout, the columns differ in height)
       T + '#js_viewCityMenu, ' + T + '#js_viewFriends { top: var(--ikm-mtop, 400px)' + I + ' }',
+      // hover info (a long press on gold, a resource...): as wide as the town bar, just above it
+      // (tipFit sets the size and place; any touch or Back hides it)
+      T + '.infoTip { position: fixed' + I + ' left: 50%' + I + ' right: auto' + I + ' top: auto' + I +
+        ' bottom: var(--ikm-tipb, 420px)' + I + ' margin: 0' + I + ' z-index: 2147483000' + I +
+        ' transform: translateX(-50%) scale(var(--ikm-tipk, 1))' + I + ' transform-origin: 50% 100%' + I + ' }',
       // transport: a panel of its own, much bigger but not as wide as a window
       C + '.transportPanel { position: fixed' + I + ' left: 0' + I + ' right: 0' + I + ' top: auto' + I + ' width: 260px' + I +
         ' margin: 0 auto' + I + ' zoom: ' + TRANSPORT_Z + '; bottom: ' + ((DOCK_TOP + TOWN_H + 10) / TRANSPORT_Z).toFixed(1) + 'px' + I + ' }',
@@ -1744,7 +1839,7 @@
     var shop = document.querySelector('#globalResources .ambrosia a, #globalResources .ambrosiaNoSpin a');
     if (shop) {
       var word = shop.textContent.trim();
-      var sb = sheetButton(list, 'red shop', !word || word === 'Shop' ? tr('shop') : word, function () { press(shop); });
+      var sb = sheetButton(list, 'red shop', word || tr('shop'), function () { press(shop); });   // the game's own word
       sb.insertBefore(artOf(shop, 'urn'), sb.firstChild);
     }
     var inv = document.querySelector('#globalResources .inventory a');
@@ -1762,8 +1857,8 @@
     Array.prototype.forEach.call(document.querySelectorAll('#GF_toolbar li a'), function (a) {
       if (a.querySelector('#servertime') || a.closest('.serverTime')) return;
       if (a.closest('.logout')) { logout = a; return; }
+      // word for word the game's own row of links (its avatar picture goes with the player's name)
       var label = a.textContent.replace(/\s+/g, ' ').trim();
-      if (!label && a.id === 'avatarPictureSmall') label = tr('avatar');
       if (label) sheetButton(list, '', label, function () { press(a); });
     });
     if (logout) sheetButton(list, 'wide', logout.textContent.trim() || logout.title, function () { press(logout); });
@@ -2026,9 +2121,16 @@
       }
       // above the column's edit handle (it separates them from the friends): the chat at the very top,
       // the message under it
-      var edit = col.querySelector('a.edit'), h = first.offsetHeight || 40;
-      var floor = edit && edit.offsetHeight ? edit.offsetTop - ul.offsetTop - 6 : first.offsetTop - (step - h);
-      var top = (floor - h - step * (CLAN.length - 1 - CLAN.indexOf(c))) + 'px';
+      // one unbroken column: the handle right on the first friend, the alliance items right on the handle
+      var edit = col.querySelector('a.edit'), h = first.offsetHeight || 40, floor;
+      if (edit && edit.offsetHeight) {
+        var et = (ul.offsetTop + first.offsetTop - edit.offsetHeight) + 'px';
+        if (edit.style.top !== et) edit.style.top = et;
+        floor = first.offsetTop - edit.offsetHeight;
+      } else {
+        floor = first.offsetTop;
+      }
+      var top = (floor - h * (CLAN.length - CLAN.indexOf(c))) + 'px';
       if (li.style.top !== top) li.style.top = top;
       var name = (link.getAttribute('alt') || link.textContent || '').trim();
       if (li.getAttribute('data-ikm-name') !== name) li.setAttribute('data-ikm-name', name);
@@ -2447,7 +2549,15 @@
   // Tells the app which server's game is running, and its language: the app opens that server next
   // time, checks it for news and speaks its language. The game's "ar" is Argentina, unless the page
   // reads right to left.
-  var reported = '';
+  var reported = '', reportedVersion = '';
+  function gameVersion() {
+    var links = document.querySelectorAll('#GF_toolbar a');
+    for (var i = 0; i < links.length; i++) {
+      var m = /^\s*v(\d+(?:\.\d+)+)\s*$/.exec(links[i].textContent || '');
+      if (m) return m[1];
+    }
+    return '';
+  }
   // The language the game is shown in (its Options can differ from the server's community, e.g.
   // English on an Arabic server): the game loads its skin as /skin/compiled-<code>-city.css, next to
   // compiled-ltr-common / compiled-rtl-common. Its LocalizationStrings keep the server's code.
@@ -2469,6 +2579,12 @@
     } catch (e) { /* not ready yet */ }
     if (!code) return;
     if (code === 'ar' && getComputedStyle(document.body).direction === 'rtl') code = 'ae';
+    // the live game's version, from its own row of links ("v17.6.1"): the app tells if it changed
+    var ver = gameVersion();
+    if (ver && ver !== reportedVersion && A.gameVersion) {
+      reportedVersion = ver;
+      A.gameVersion(ver);
+    }
     var sig = code + '|' + name;
     if (sig === reported) return;
     reported = sig;
@@ -2503,7 +2619,7 @@
   // The town bar is a wheel of the player's towns in their order, the one you are in in the middle.
   // It follows the finger exactly; a flick spins it on, slowing down, and it always comes to rest with
   // one town in the middle. It never switches by itself: another town resting in the middle is ringed,
-  // and a tap on it goes there at once. A tap on a town beside the middle brings it to the middle; a tap
+  // and a tap on it goes there at once. A tap on a town beside the middle goes there at once too; a tap
   // on the town you are in opens the full list. Back, or the "you are here" tag, turns it back.
   // Felt (a setting): small notches between towns, a firmer one as each town passes the middle.
   var SLIDE_STEP = 160;        // px from one town to the next
@@ -2708,8 +2824,8 @@
         var r = box.getBoundingClientRect(), base = Math.round(slide.pos);
         var off = slide.items.length < 2 ? 0 :
           Math.max(-2, Math.min(2, Math.round((e.clientX - (r.left + r.right) / 2) / SLIDE_STEP)));
-        if (off) {                                       // a town beside the middle: bring it there
-          slideSpinTo(base + off * readDir());
+        if (off) {                                       // a press on a town beside the middle: go there now
+          slideCommit(base + off * readDir());
           return;
         }
         if (slideIndex(base) !== slide.cur) { slideCommit(base); return; }       // the ringed town: go
@@ -3239,6 +3355,23 @@
     root.__ikmTextSig = pairs.length && root.__ikmTextTries < 4 ? '' : signature();
     root.__ikmTextAt = now;
   }
+  // Text in a slider row (transport: the ship names, "+ 92,000", the capacity and speed rows) was
+  // made for the game's own size: bigger, it lies on the slider or pushes the row out of its frame.
+  // There it stays as the game has it.
+  function sliderText(root) {
+    var bars = Array.prototype.map.call(root.querySelectorAll('.sliderinput'), function (s) { return s.getBoundingClientRect(); })
+      .filter(function (r) { return r.width; });
+    if (!bars.length) return;
+    Array.prototype.forEach.call(root.querySelectorAll('[data-ikm-fs]:not([data-ikm-small])'), function (e) {
+      var r = e.getBoundingClientRect();
+      var onBar = r.width && bars.some(function (b) {
+        return r.left < b.right && r.right > b.left && r.top < b.bottom && r.bottom > b.top;
+      });
+      if (!onBar && !e.closest('.sliderBox')) return;
+      e.setAttribute('data-ikm-small', '1');
+      fontTo(e, 1);
+    });
+  }
   function restoreText() {
     Array.prototype.forEach.call(document.querySelectorAll('[data-ikm-tight]'), function (e) {
       e.removeAttribute('data-ikm-tight');
@@ -3328,6 +3461,7 @@
     Array.prototype.forEach.call(document.querySelectorAll('.templateView .mainContent, #sidebar'), enlargeText);
     Array.prototype.forEach.call(document.querySelectorAll('.templateView .mainContent'), fitText);
     Array.prototype.forEach.call(document.querySelectorAll('.templateView .mainContent, #sidebar'), fixOverlaps);
+    Array.prototype.forEach.call(document.querySelectorAll('.templateView .mainContent'), sliderText);
     oneItemOut();
     markHitBoxes();
     markNumbers();
@@ -3358,7 +3492,10 @@
       var k = Math.min(1, (window.innerWidth - (isThumb() ? 20 : 8)) / (w + 12));
       // thumb: a big window is exactly as wide as the border, the line the side box stops at
       var wide = isThumb() && bw >= BIG_WINDOW;
+      var fixed = isThumb() && !wide && bw && !box.querySelector('.mainContentScroll');
       if (wide) k = (window.innerWidth - 2 * PANEL_GAP) / (w > bw + 12 ? w : bw);
+      // a small window whose content never grows (e.g. "resources missing"): bigger, up to the width
+      else if (fixed) k = Math.min(SMALL_UP, (window.innerWidth - 2 * PANEL_GAP) / (w > bw + 12 ? w : bw));
       else if (bw && bw * k <= laneW / 0.9) k = Math.min(k, laneW / bw);
       var room = panelArea(Math.floor(bw * k), true);
       // (thumb sets the height of windows with a list itself: scaling those would shrink them twice)
@@ -3411,7 +3548,8 @@
   var WINDOW_ICON = 12;               // a window's round icon sticks out above its header
   var PARK_ZONE = 120;                // classic: a wide window dragged down narrows over this many px
   var BIG_WINDOW = 600;               // thumb: windows this wide (the game's are 728) fill the width
-  var WINDOW_UNDER = 264;             // thumb: room under every window (the side box's upgrade part)
+  var WINDOW_UNDER = 264;             // thumb: room under a window with a side box (its upgrade part)
+  var SMALL_UP = 1.6;                 // thumb: a small fixed window may grow up to this
   var panelPos = {}, panelPosKey = '';
   function loadPanelPos() {
     var key = isThumb() ? THUMB_POS_KEY : POS_KEY;
@@ -3526,7 +3664,13 @@
   // Thumb: every window is this high on screen.
   function windowRoom() {
     var a = panelArea(0, true);
-    return Math.max(300, a.bottom - a.top - WINDOW_UNDER);
+    // with no side box under it, a window has the whole map area (the same small gaps all round)
+    return Math.max(300, a.bottom - a.top - (sideBoxShown() ? WINDOW_UNDER : PANEL_GAP));
+  }
+  function sideBoxShown() {
+    var sb = document.getElementById('sidebar');
+    if (!sb || !sb.children.length || !visible(sb)) return false;
+    return sb.getBoundingClientRect().height > 20;
   }
   // Thumb: the room left to right for something from `top` to `bottom`: an open column of side
   // buttons pushes it aside, a retracted one is free space.
@@ -3687,6 +3831,14 @@
     if (cfg.touchFix && GAME_HOST) e.preventDefault();
   }, true);
   document.addEventListener('focusin', onFocusIn, true);
+  // A number box: the cursor always goes to the end of the number (Backspace clears it, or type on).
+  // Set again a moment later, after the game's own handlers (some select everything on focus).
+  ['focusin', 'click', 'mouseup', 'touchend'].forEach(function (t) {
+    document.addEventListener(t, function (e) {
+      var el = e.target;
+      if (el && el.hasAttribute && el.hasAttribute('data-ikm-number')) caretEnd(el);
+    }, true);
+  });
   if (GAME_HOST) {
     document.addEventListener('pointerdown', function (e) { if (isTextField(e.target)) markNumber(e.target); }, true);
     ['input', 'keyup', 'change', 'focusout'].forEach(function (t) { document.addEventListener(t, onTyped, true); });

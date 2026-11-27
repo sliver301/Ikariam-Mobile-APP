@@ -124,6 +124,11 @@ class Prefs(context: Context) {
         get() = sp.getBoolean("askedBattery", false)
         set(v) { sp.edit().putBoolean("askedBattery", v).apply() }
 
+    /** The live game version the player was last told about (told once per version). */
+    var warnedGameVersion: String
+        get() = sp.getString("warnedGameVersion", "") ?: ""
+        set(v) { sp.edit().putString("warnedGameVersion", v).apply() }
+
     /** The town wheel's notches can be felt (small ones between towns, a firmer one on each town). */
     var wheelBuzz: Boolean
         get() = sp.getBoolean("wheelBuzz", true)
