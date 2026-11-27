@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="72" viewBox="0 0 300 72">
+<defs>
+<linearGradient id="r" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b3261a"/><stop offset="1" stop-color="#7c1208"/></linearGradient>
+<linearGradient id="p" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fdf7dd"/><stop offset="1" stop-color="#ecd29b"/></linearGradient>
+</defs>
+<rect x="3" y="3" width="294" height="66" rx="16" fill="url(#p)" stroke="#e8b84f" stroke-width="4"/>
+<rect x="9" y="9" width="282" height="54" rx="11" fill="none" stroke="#e8b84f" stroke-width="1.5" opacity=".7"/>
+<text x="150" y="46" text-anchor="middle" font-family="Segoe UI, Tahoma, Roboto, Helvetica, Arial, sans-serif" font-weight="bold" font-size="30" fill="#7c1208">اقرأ بالعربية</text>
+</svg>

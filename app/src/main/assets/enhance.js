@@ -2386,7 +2386,7 @@
     });
     // An odd number of links left a hole in the grid: Discord becomes a small square with its logo and
     // shares one cell with the version.
-    var dc = links.filter(function (l) { return /discord/i.test(l.a.href || ''); })[0];
+    var dc = links.filter(function (l) { return /discord/i.test(l.a.href || '') || /^discord$/i.test(l.label); })[0];
     var ver = links.filter(function (l) { return l.a.closest('.version'); })[0];
     var pair = links.length % 2 === 1 && dc && ver;
     links.forEach(function (l) {
