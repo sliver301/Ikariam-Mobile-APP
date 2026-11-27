@@ -15,12 +15,16 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.PowerManager
 import android.os.SystemClock
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.text.Html
 import android.util.Log
 import android.webkit.CookieManager
 import android.webkit.WebSettings
 import org.json.JSONArray
 import org.json.JSONObject
 import java.net.HttpURLConnection
+import java.io.File
 import java.net.URL
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicBoolean
@@ -37,6 +41,12 @@ import kotlin.concurrent.thread
  * unrestricted (battery); until then it can be several minutes.
  *
  * It never logs in, so it cannot end a session on a PC. Nothing in the game is changed or clicked.
+ *
+ * When an advisor has news and the game is not on screen, the app also opens that advisor's page (as the
+ * player would) to put its newest lines in the notification, with the advisor's picture. The game counts
+ * them as read then, so the app keeps every line it read on the player's behalf ("unseen", per server
+ * and advisor) until the player has looked at that advisor in the app: until then the page shows the
+ * advisor glowing and those lines highlighted, as if the app had never looked.
  */
 class NewsChecker(private val ctx: Context) {
 
@@ -100,6 +110,34 @@ class NewsChecker(private val ctx: Context) {
         /** Saved logins were cleared by the player: no need to say "logged out" for each server. */
         fun loginsCleared(ctx: Context) {
             for (host in Prefs(ctx).knownServers) stateOf(ctx, host).edit().putBoolean("loginWarned", true).apply()
+        }
+
+        /** The game's page for each advisor, and its picture. */
+        private val VIEWS = mapOf(
+            "cities" to "tradeAdvisor", "military" to "militaryAdvisor",
+            "research" to "researchAdvisor", "diplomacy" to "diplomacyAdvisor",
+        )
+        private val PICTURES = mapOf("cities" to "mayor", "military" to "general", "research" to "scientist", "diplomacy" to "diplomat")
+        private const val UNSEEN_MAX = 20
+        private val DATE = Regex("""^\d{1,2}[./-]\d{1,2}[./-]\d{2,4}(\s+\d{1,2}:\d{2}(:\d{2})?)?$""")
+        private const val KNOWN_MAX = 60
+
+        /** Lines read by the app that the player has not seen yet, per advisor: {"cities": [{"k":..,"t":..}], ...}. */
+        fun unseen(ctx: Context, host: String): JSONObject {
+            val state = stateOf(ctx, host)
+            val out = JSONObject()
+            for (key in ADVISORS.keys) {
+                val list = try { JSONArray(state.getString("unseen_$key", "[]")) } catch (e: Exception) { JSONArray() }
+                if (list.length() > 0) out.put(key, list)
+            }
+            return out
+        }
+
+        /** The player looked at that advisor in the app: its lines are seen, its notification goes. */
+        fun clearUnseen(ctx: Context, host: String, key: String) {
+            if (key !in ADVISORS) return
+            stateOf(ctx, host).edit().remove("unseen_$key").apply()
+            ctx.getSystemService(NotificationManager::class.java)?.cancel("$host/$key".hashCode())
         }
 
         /** Android lets it check each minute even while the phone sleeps. */
@@ -257,7 +295,9 @@ class NewsChecker(private val ctx: Context) {
             if ((seenAt[host] ?: 0) > asked) return
 
             val css = ADVISORS.keys.associateWith { advisors.optJSONObject(it)?.optString("cssclass").orEmpty() }
-            Log.i(TAG, "$host:${update(host, css, fromPage = false)}")
+            val tell = mutableListOf<Pair<String, Boolean>>()
+            Log.i(TAG, "$host:${update(host, css, fromPage = false, tell = tell)}")
+            for ((key, alert) in tell) tellNews(host, key, alert, cookie, golden = css[key].orEmpty().contains("premium"))
         } finally {
             conn.disconnect()
         }
@@ -274,7 +314,10 @@ class NewsChecker(private val ctx: Context) {
     }
 
     /** Compares with what was told, announces what is new; returns a line for the log. */
-    private fun update(host: String, css: Map<String, String>, fromPage: Boolean): String = synchronized(seenAt) {
+    private fun update(
+        host: String, css: Map<String, String>, fromPage: Boolean,
+        tell: MutableList<Pair<String, Boolean>>? = null,
+    ): String = synchronized(seenAt) {
         val state = stateOf(ctx, host)
         val known = state.getBoolean("initialized", false)
         val lang = prefs.languageOf(host)
@@ -288,10 +331,12 @@ class NewsChecker(private val ctx: Context) {
             val changed = (active && !state.getBoolean("active_$key", false)) || (alert && !wasAlert)
             // A server never read before: what the page shows is seen, what a check finds is not.
             val fresh = changed && (known || !fromPage)
-            if (fresh && prefs.newsAlerts) {
+            if (fresh && prefs.newsAlerts && tell != null) {
+                tell += key to alert                                     // told with its lines, below
+            } else if (fresh && prefs.newsAlerts) {
                 val title = "${prefs.serverTitle(host)} · ${Lang.word(ctx, lang, ADVISORS.getValue(key))}"
                 notify(host, key, title, Lang.word(ctx, lang, if (alert) "attack" else "news"), urgent = alert)
-            } else if (fromPage && !active) {
+            } else if (fromPage && !active && !state.contains("unseen_$key")) {
                 notifications?.cancel("$host/$key".hashCode())       // read in the game
             }
             report.append(" $key=${if (alert) "red" else if (active) "news" else "-"}${if (fresh) "!" else ""}")
@@ -350,19 +395,28 @@ class NewsChecker(private val ctx: Context) {
         )
     }
 
-    private fun notify(host: String, key: String, title: String, text: String, urgent: Boolean) {
+    private fun notify(
+        host: String, key: String, title: String, text: String, urgent: Boolean,
+        icon: Bitmap? = null, lines: List<String> = emptyList(),
+    ) {
         if (!canNotify()) return
         ensureChannels(ctx)
         val builder = Notification.Builder(ctx, if (urgent) CHANNEL_URGENT else CHANNEL)
             .setSmallIcon(R.drawable.ic_notify)
             .setContentTitle(title)
             .setContentText(text)
-            .setStyle(Notification.BigTextStyle().bigText(text))
+            .setStyle(
+                if (lines.size > 1) Notification.InboxStyle().also { st -> lines.take(7).forEach { st.addLine(it) } }
+                    .setSummaryText(if (lines.size > 7) "+${lines.size - 7}" else null)
+                else Notification.BigTextStyle().bigText(text)
+            )
             .setContentIntent(opens(host, key))
             .setWhen(System.currentTimeMillis())
             .setShowWhen(true)
             .setAutoCancel(true)
             .setCategory(if (urgent) Notification.CATEGORY_ALARM else Notification.CATEGORY_EVENT)
+        if (icon != null) builder.setLargeIcon(icon)
+        if (lines.size > 1) builder.setNumber(lines.size)
         if (key == LOGIN) {
             // one tap logs in here again (which ends the session on the PC, so it is the player's tap)
             val label = Lang.word(ctx, prefs.languageOf(host), "reconnect")
@@ -370,6 +424,127 @@ class NewsChecker(private val ctx: Context) {
             builder.setGroup("$host/$LOGIN")     // never folded in with the others, which hides the button
         }
         notifications?.notify("$host/$key".hashCode(), builder.build())
+    }
+
+    /**
+     * Opens the advisor's page (as the player would) and tells its new lines: every line the app has
+     * read since the player last looked at that advisor, newest first. Without lines (a page that has
+     * none, or no answer), the short "news" alert as before.
+     */
+    private fun tellNews(host: String, key: String, alert: Boolean, cookie: String, golden: Boolean) {
+        val lang = prefs.languageOf(host)
+        val title = "${prefs.serverTitle(host)} · ${Lang.word(ctx, lang, ADVISORS.getValue(key))}"
+        val short = Lang.word(ctx, lang, if (alert) "attack" else "news")
+        val lines = try { readNews(host, key, cookie) } catch (e: Exception) {
+            Log.i(TAG, "$host/$key: no lines (${e.javaClass.simpleName})"); emptyList()
+        }
+        val icon = try { advisorPicture(host, key, lang, golden) } catch (e: Exception) { null }
+        if (lines.isEmpty()) {
+            notify(host, key, title, short, urgent = alert, icon = icon)
+            return
+        }
+        notify(host, key, title, lines.first(), urgent = alert, icon = icon, lines = lines)
+    }
+
+    /** The advisor page's new lines, added to what is still unseen; returns all unseen lines' text. */
+    private fun readNews(host: String, key: String, cookie: String): List<String> {
+        val view = VIEWS[key] ?: return emptyList()
+        val conn = (URL("https://$host/index.php?view=$view&ajax=1").openConnection() as HttpURLConnection).apply {
+            instanceFollowRedirects = false
+            connectTimeout = ANSWER_MS
+            readTimeout = ANSWER_MS
+            setRequestProperty("Cookie", cookie)
+            setRequestProperty("User-Agent", desktopUserAgent())
+            setRequestProperty("Accept", "application/json, text/javascript, */*; q=0.01")
+            setRequestProperty("X-Requested-With", "XMLHttpRequest")
+        }
+        val body = try {
+            if (conn.responseCode != 200) return emptyList()
+            conn.inputStream.bufferedReader().use { it.readText() }
+        } finally {
+            conn.disconnect()
+        }
+        val root = try { JSONArray(body.trim()) } catch (e: Exception) { return emptyList() }
+        var html = ""
+        fun walk(n: Any?) {
+            when (n) {
+                is String -> if (n.length > html.length && n.contains("<tr")) html = n
+                is JSONArray -> for (i in 0 until n.length()) walk(n.opt(i))
+                is JSONObject -> n.keys().forEach { walk(n.opt(it)) }
+            }
+        }
+        walk(root)
+        val rows = rowsOf(html)
+        val state = stateOf(ctx, host)
+        val known = try { JSONArray(state.getString("rows_$key", "[]")) } catch (e: Exception) { JSONArray() }
+        val knownSet = (0 until known.length()).map { known.optString(it) }.toSet()
+        // new = what the game highlights (its unread lines); else what was not on the page last time
+        // (the first time only the newest line)
+        val marked = rows.filter { it.third }
+        val fresh = when {
+            marked.isNotEmpty() -> marked.take(UNSEEN_MAX)
+            knownSet.isEmpty() -> rows.take(1)
+            else -> rows.filter { it.first !in knownSet }.take(6)
+        }
+        val unseen = try { JSONArray(state.getString("unseen_$key", "[]")) } catch (e: Exception) { JSONArray() }
+        val have = (0 until unseen.length()).map { unseen.optJSONObject(it)?.optString("k") }.toSet()
+        val merged = JSONArray()
+        fresh.filter { it.first !in have }.forEach { merged.put(JSONObject().put("k", it.first).put("t", it.second)) }
+        for (i in 0 until unseen.length()) if (merged.length() < UNSEEN_MAX) merged.put(unseen.opt(i))
+        val keys = JSONArray()
+        (rows.map { it.first } + knownSet).distinct().take(KNOWN_MAX).forEach { keys.put(it) }
+        state.edit().putString("rows_$key", keys.toString())
+            .apply { if (merged.length() > 0) putString("unseen_$key", merged.toString()) }.apply()
+        return (0 until merged.length()).mapNotNull { merged.optJSONObject(it)?.optString("t") }.filter { it.isNotEmpty() }
+    }
+
+    /**
+     * The table rows of an advisor page: (key, text, highlighted = unread in the game). The page script
+     * builds the same key from the same row.
+     */
+    private fun rowsOf(html: String): List<Triple<String, String, Boolean>> {
+        val out = mutableListOf<Triple<String, String, Boolean>>()
+        val dot = setOf(RegexOption.DOT_MATCHES_ALL, RegexOption.IGNORE_CASE)
+        Regex("<tr([^>]*)>(.*?)</tr>", dot).findAll(html).forEach { m ->
+            if (m.groupValues[1].contains("account")) return@forEach
+            val cells = Regex("<td[^>]*>(.*?)</td>", dot).findAll(m.groupValues[2]).map { cellText(it.groupValues[1]) }.toList()
+            if (cells.size < 2) return@forEach
+            // what the notification says: the town and the news itself (no date)
+            val text = cells.filter { it.isNotEmpty() && !DATE.matches(it) }.joinToString(" · ")
+            if (text.isNotBlank()) out += Triple(cells.joinToString("|"), text, m.groupValues[1].contains("highlight"))
+        }
+        return out
+    }
+
+    private fun cellText(h: String): String {
+        val bare = h.replace(Regex("<(script|style)[^>]*>.*?</\\1>", setOf(RegexOption.DOT_MATCHES_ALL, RegexOption.IGNORE_CASE)), "")
+            .replace(Regex("<[^>]+>"), "")        // as the page's textContent: no space for a tag
+        val text = if (bare.contains('&')) Html.fromHtml(bare, Html.FROM_HTML_MODE_LEGACY).toString() else bare
+        return text.replace('\u00a0', ' ').replace(Regex("\\s+"), " ").trim()
+    }
+
+    /** The advisor's own picture as the player sees it (golden with a premium account), with its news glow. */
+    private fun advisorPicture(host: String, key: String, lang: String, golden: Boolean): Bitmap? {
+        val name = (PICTURES[key] ?: return null) + (if (golden) "_premium" else "") + "_active.png"
+        val rtl = lang in setOf("ar", "he", "fa")
+        val file = File(ctx.cacheDir, "advisor_" + (if (rtl) "rtl_" else "") + name)
+        if (!file.exists()) {
+            val paths = if (rtl) listOf("cdn/all/both/rtl/layout/advisors/") else listOf("cdn/all/both/layout/advisors/", "cdn/all/both/rtl/layout/advisors/")
+            for (path in paths) {
+                val conn = URL("https://$host/$path$name").openConnection() as HttpURLConnection
+                conn.connectTimeout = ANSWER_MS
+                conn.readTimeout = ANSWER_MS
+                try {
+                    if (conn.responseCode == 200 && conn.contentType.orEmpty().startsWith("image")) {
+                        file.writeBytes(conn.inputStream.use { it.readBytes() })
+                        break
+                    }
+                } finally {
+                    conn.disconnect()
+                }
+            }
+        }
+        return if (file.exists()) BitmapFactory.decodeFile(file.path) else null
     }
 
     /** Logged out (usually: logged in on a PC). Said once per server, until it works again. */

@@ -32,8 +32,11 @@ object Updater {
         ""
     }
 
-    /** The Ikariam version this app was made for: its own version without the leading "1." */
-    fun gameTarget(ctx: Context): String = appVersion(ctx).substringAfter('.', "")
+    /**
+     * The Ikariam version this app was made for: the three numbers after the leading "1." ("1.17.6.1" and
+     * "1.17.6.1.1", the app's own second release for the same game, both mean game 17.6.1).
+     */
+    fun gameTarget(ctx: Context): String = appVersion(ctx).split('.').drop(1).take(3).joinToString(".")
 
     /** Is version `a` newer than `b` (dotted numbers)? */
     fun newer(a: String, b: String): Boolean {

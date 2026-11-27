@@ -17,7 +17,8 @@ phone and allow installing from that app when Android asks. Android 12 or newer.
 as usual and pick your server; the app remembers it.
 
 **Updates:** the app checks this page when it opens and offers to download and install a newer release for you.
-Version numbers follow the game: app 1.17.6.1 is made for game version 17.6.1. When the game moves to a new version,
+Version numbers follow the game: app 1.17.6.1 is made for game version 17.6.1 (1.17.6.1.1 is the app's second release
+for that game version). When the game moves to a new version,
 the app tells you once, in case something looks different until the app catches up.
 
 ## Screenshots
@@ -57,7 +58,7 @@ servers (see the video).</sub>
   In an alliance, Social holds the alliance chat and alliance message on top of your friends.
 - Game windows fill the screen's width; windows and side panels can be dragged by their top bar and remember where
   you left them. The alliance chat is full width with text twice the game's size.
-- **More:** the shop, inventory, switch server (straight to any server you play on this phone), the game's links and
+- **More:** the shop, inventory, Discord, switch server (straight to any server you play on this phone), the game's links and
   **App settings**: a window in the game's style with layout, rotation, the switches, reload, lobby, the tutorial
   and more.
 - Any server, any language: the app follows the language you choose in the game's Options (27 languages), mirrored
@@ -68,16 +69,22 @@ servers (see the video).</sub>
 **Touch controls**
 - Tap = click. Hold = the game's hover info (on gold or a resource it shows large, just above the town bar; any
   touch or Back closes it). Hold and move = drag.
-- The island view and the world map open with your town / island in the middle of the screen.
+- Towns open on their Town Hall; the island view and the world map open with your town / island in the middle.
+- **World map bar:** X / Y boxes (Next goes to the other box, then Go jumps there and selects the island) and the
+  game's island shortcut list as a dropdown: your towns' islands, then the islands you saved, each with its
+  resource, name and coordinates. ★ saves the selected island (with your own name), ✕ removes one.
+- Sliders: take the knob from a wide band around it or slide along the track; a small tick on every step.
 - Drag the city and island with one finger; pinch or double-tap zooms the map only, never the bars.
 - Two fingers inside a window (for example a battle report) zoom its content.
 - Number boxes open the number pad (always English digits), with the cursor after the last digit.
-- Rearrange buildings: drag a building to a green place; Save saves, Back cancels.
+- Rearrange buildings: the building moves under your thumb; on a free place a green ring pulses and the phone
+  buzzes. Save saves, Back cancels.
 - Back closes what is on top; with nothing open, Back twice leaves the app.
 
 **News alerts (optional, on by default)**
 - Every minute it checks each server you are logged in to for advisor news (towns, military, research, diplomacy)
-  and vibrates (no sound). Tap the alert to open that server at that advisor.
+  and vibrates (no sound). The alert shows the news itself (town and text) with the advisor's picture; tap it to
+  open that server at that advisor. News the app read for you stays highlighted in the game until you have looked.
 - It never logs in by itself. If you were logged out (for example by playing on a PC), it says so once, with a
   Reconnect button.
 - Note: background checks may not be allowed by the game's rules; use at your own risk. Turn them off in App

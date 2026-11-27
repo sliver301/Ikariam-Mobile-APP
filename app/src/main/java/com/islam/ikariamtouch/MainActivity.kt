@@ -863,6 +863,22 @@ class MainActivity : Activity() {
             }
         }
 
+        /** News lines the app read for the player (for a notification) that the player has not seen yet. */
+        @JavascriptInterface
+        fun unseen(): String {
+            val host = currentHost
+            if (host.isEmpty() || !onGameServer) return "{}"
+            return NewsChecker.unseen(this@MainActivity, host).toString()
+        }
+
+        /** The player looked at that advisor in the app: its unseen lines are seen now. */
+        @JavascriptInterface
+        fun newsSeen(key: String) {
+            runOnUiThread {
+                if (onGameServer && currentHost.isNotEmpty()) NewsChecker.clearUnseen(this@MainActivity, currentHost, key)
+            }
+        }
+
         /** The live game's version, from its own row of links (e.g. "17.6.1"). */
         @JavascriptInterface
         fun gameVersion(v: String) {

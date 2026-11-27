@@ -162,7 +162,9 @@
       'html.ikm-moving .ikm-lifted .buildingimg { opacity: .35; }',
       '.ikm-ghost { position: fixed; left: 0; top: 0; z-index: 150001; pointer-events: none; transform-origin: 0 0; background-repeat: no-repeat; }',
       '.ikm-dropring { position: fixed; z-index: 150000; display: none; box-sizing: border-box; pointer-events: none;' +
-        ' border: 4px solid #35d13f; border-radius: 50%; background: rgba(53, 209, 63, .25); }',
+        ' width: 160px; height: 160px; margin: -80px 0 0 -80px; border: 5px solid #35d13f; border-radius: 50%;' +
+        ' background: rgba(53, 209, 63, .28); animation: ikm-blip .55s ease-out infinite; }',
+      '@keyframes ikm-blip { 0% { transform: scale(.55); opacity: 1; } 100% { transform: scale(1.12); opacity: .25; } }',
       '.ikm-dropring.ikm-no { border-color: #e03020; background: rgba(224, 48, 32, .22); }',
       // the game\'s confirm box (e.g. demolish) stays above the side box
       'html.ikm-portrait #popupMessage { z-index: 101 !important; }',
@@ -548,7 +550,27 @@
   }
 
   // New view or new map from the game: start from the game's own position.
+  // Another town picked while a transport was open: the game left it showing the old town as the
+  // place the goods leave from. Its window closes; its town list opens again, now for the new town.
+  var watchedTown = '';
+  function townWatch() {
+    var id = currentTownId();
+    if (!id) return;
+    var was = watchedTown;
+    watchedTown = id;
+    if (!was || was === id) return;
+    var tv = document.querySelector('.templateView[id^="transport"]');
+    var x = tv && tv.querySelector('.close');
+    if (x) x.click();
+    if (closeTransport()) {
+      setTimeout(function () {
+        var l = document.querySelector('#js_viewCityMenu li.transportLauncher a, #js_viewCityMenu li.transportLauncher');
+        if (l) l.click();
+      }, 700);
+    }
+  }
   function camCheck() {
+    townWatch();
     cityArt();
     var view = camView();
     var wm = document.getElementById('worldmap');
@@ -557,13 +579,54 @@
     var key = view + ':' + wm.getAttribute('data-ikm-cam');
     if (key !== cam.key) {
       cam.key = key;
+      gameScaleNormal(view);
       camReset();
-      focus = view === 'city' ? null : { view: view, key: key, until: performance.now() + 6000 };
+      focus = { view: view, key: key, until: performance.now() + 6000 };
+      cam.town = currentTownId();
+    }
+    // World map: another town picked (town wheel) = the game jumps to its island: centre that one.
+    if (view === 'world' && currentTownId() !== cam.town) {
+      cam.town = currentTownId();
+      focusAfterJump();
     }
     if (focus) mapFocus();
+    mapBar();
+  }
+  // The game has a zoom of its own (the mouse wheel; it remembers it). On a phone the app zooms, so the
+  // game's stays at its normal size: a town opened zoomed far out once it had been turned down.
+  function gameScaleNormal(view) {
+    if (view !== 'city' && view !== 'island') return;
+    try {
+      var sc = view === 'city' ? ikariam.worldview_scale_city : ikariam.worldview_scale_island;
+      var steps = Math.round((Math.min(1, ikariam.worldview_scale_max || 1) - sc) / 0.05);
+      if (!steps) return;
+      var r = document.getElementById('worldview').getBoundingClientRect();
+      ikariam.getController().scaleWorldMap(steps, r.left + r.width / 2, r.top + r.height / 2);
+    } catch (e) { /* the game's own */ }
+  }
+  function markedIsland() {
+    try { return JSON.stringify(window.worldmap && worldmap.markedIslandXY); } catch (e) { return ''; }
+  }
+  // The game is about to jump to another island: centre it once the game has marked it.
+  // `to` = [x, y]: that island is then also selected, as by one tap on it (its info, add / remove).
+  function focusAfterJump(to) {
+    var now = markedIsland();
+    var same = to && now === JSON.stringify([+to[0], +to[1]]);
+    focus = { view: 'world', key: cam.key, until: performance.now() + 5000, after: same || to ? undefined : now, select: to || null,
+              from: to ? performance.now() + 900 : 0 };
+  }
+  function tileAt(to) {
+    var tiles = document.querySelectorAll('#map1 [id^="tile_"]');
+    for (var i = 0; i < tiles.length; i++) if (tiles[i].mapX == to[0] && tiles[i].mapY == to[1]) return tiles[i];
+    return null;
+  }
+  function selectIsland(to) {
+    var t = tileAt(to);
+    if (!t || !/islandTile/.test(t.className)) return;          // open sea: nothing to select
+    try { worldmap.markIsland(t.id); } catch (e) { /* the game's own */ }
   }
 
-  // A map just opened: the player's own town (island) or island (world map) goes to the middle of
+  // A map just opened: the Town Hall (town), the player's own town (island) or island (world map) goes to the middle of
   // the map area. The game centres it in its 1024 px frame, which is wider than the phone's screen,
   // so it ended up at the side or off the screen. Given up once the player touches the map.
   var focus = null;
@@ -579,6 +642,7 @@
   }
   function focusSpot(view) {
     if (view === 'world') return document.querySelector('#worldmap .islandMarked');
+    if (view === 'city') return document.querySelector('#locations #position0');
     var id = currentTownId(), name = '';
     try { name = String(ikariam.model.relatedCityData['city_' + id].name || ''); } catch (e) { /* by id only */ }
     var spots = document.querySelectorAll('#worldmap .cityLocation.own:not(.cityLocationScroll)');
@@ -592,10 +656,15 @@
   }
   function mapFocus() {
     if (performance.now() > focus.until || g) { focus = null; return; }
-    var spot = focusSpot(focus.view), r = spot && spot.getBoundingClientRect();
+    if (focus.after !== undefined && markedIsland() === focus.after) return;   // the jump has not happened yet
+    if (focus.from && performance.now() < focus.from) return;                  // the map is being redrawn
+    // a jump to coordinates: that place itself (it may be open sea), else the marked island
+    var spot = (focus.select && tileAt(focus.select)) || focusSpot(focus.view), r = spot && spot.getBoundingClientRect();
     if (!r || !r.width) return;                       // not drawn yet: next time
     var m = mapMiddle(), dx = m.x - (r.left + r.right) / 2, dy = m.y - (r.top + r.bottom) / 2;
+    var sel = focus.select;
     focus = null;
+    if (sel) setTimeout(function () { selectIsland(sel); }, 350);
     if (Math.abs(dx) < 4 && Math.abs(dy) < 4) return;
     if (camView() === 'world') {
       // the game moves the world map (and loads its tiles): drag it, as a finger would
@@ -612,6 +681,253 @@
     cam.ty += dy;
     camClamp();
     camApply();
+  }
+
+  // World map (thumb): the game's own navigation sits in its bottom bar, which portrait hides. This
+  // bar of the app's, under the breadcrumbs, presses it:
+  // - X / Y: a tap selects the number (typing replaces it); Next goes to the other box, whichever came
+  //   first; once both were typed the key says Go and jumps there (the game's coordinate jump), and the
+  //   island is selected as by one tap on it.
+  // - the island button: the selected island (its name, your town on it, its resource, coordinates);
+  //   it opens the game's island shortcut list (your towns and the islands you saved, kept by the game)
+  //   as a list in the game's style.
+  // - add / remove: the game's own buttons for the selected island (shown when the game shows them).
+  var ISLAND_CACHE = 'ikm.islands.';
+  function islandInfo(x, y) {
+    var host = location.host, key = x + ':' + y, cache = {};
+    try { cache = JSON.parse(localStorage.getItem(ISLAND_CACHE + host) || '{}') || {}; } catch (e) { cache = {}; }
+    var a = null;
+    try { a = worldmap.islands[x][y]; } catch (e) { a = null; }
+    if (a && a.length > 2 && a[1]) {
+      var info = [String(a[1]), parseInt(a[2], 10) || 0];
+      if (!cache[key] || cache[key][0] !== info[0] || cache[key][1] !== info[1]) {
+        cache[key] = info;
+        try { localStorage.setItem(ISLAND_CACHE + host, JSON.stringify(cache)); } catch (e) { /* only a convenience */ }
+      }
+      return info;
+    }
+    return cache[key] || null;
+  }
+  var GOOD_ICONS = { 1: 'icon_wine.png', 2: 'icon_marble.png', 3: 'icon_glass.png', 4: 'icon_sulfur.png' };
+  function goodIcon(n) {
+    var f = GOOD_ICONS[n];
+    if (!f) return null;
+    var img = mk('img');
+    img.src = '/cdn/all/both/' + (document.documentElement.classList.contains('ikm-rtl') ? 'rtl/' : '') + 'resources/' + f;
+    img.alt = '';
+    img.onerror = function () { if (img.src.indexOf('/rtl/') < 0) img.src = img.src.replace('/both/', '/both/rtl/'); };
+    return img;
+  }
+  // The game's shortcut list: [{x, y, text, own, towns}] (own = one of your towns is on that island),
+  // one entry per island (the game lists each town, so an island with four towns came four times).
+  function shortcutList() {
+    var seen = {}, out = [];
+    shortcutEntries().forEach(function (s) {
+      var k = s.x + ':' + s.y;
+      if (!seen[k]) { seen[k] = s; s.towns = []; out.push(s); }
+      if (s.own && s.text && seen[k].towns.indexOf(s.text) < 0) seen[k].towns.push(s.text);
+      if (s.own) seen[k].own = true;
+    });
+    return out;
+  }
+  function shortcutEntries() {
+    var gs = document.getElementById('js_homeCitySelect'), sc = {};
+    try { sc = ikariam.getModel().shortcuts || {}; } catch (e) { sc = {}; }
+    if (!gs) return [];
+    return Array.prototype.map.call(gs.options, function (o) {
+      var c = /^(\d+):(\d+)$/.exec(o.value);
+      if (!c) return null;
+      var x = +c[1], y = +c[2], kind = sc[x] && sc[x][y];
+      return { x: x, y: y, text: o.text.replace(/\[\s*\d+\s*:\s*\d+\s*\]/, '').trim(), own: kind == 2 };
+    }).filter(Boolean);
+  }
+  // The resource, the island's name with your towns on it (in brackets, parted by dots) and the
+  // coordinates, into `el`. In the list the towns go on their own line(s) under the name.
+  function islandLine(el, x, y, fallback, stacked) {
+    el.innerHTML = '';
+    var entry = shortcutList().filter(function (s) { return s.x == x && s.y == y; })[0];
+    var info = islandInfo(x, y), towns = entry && entry.own ? entry.towns : [];
+    var saved = entry && !entry.own ? entry : null;
+    var name = info ? info[0] : (saved ? saved.text : (fallback || ''));
+    if (saved && info && saved.text && saved.text !== info[0]) name = saved.text + ' \u00b7 ' + info[0];
+    var icon = info && goodIcon(info[1]);
+    if (icon) el.appendChild(icon);
+    var text = el.appendChild(mk('span', 'tx' + (stacked ? ' stacked' : '')));
+    text.appendChild(mk('b', 'nm', name));
+    if (towns.length) {
+      var tw = text.appendChild(mk('span', 'towns'));
+      tw.appendChild(document.createTextNode('('));
+      towns.forEach(function (t, i) {
+        if (i) tw.appendChild(mk('span', 'dot', '\u2022'));
+        tw.appendChild(mk('span', 'town', t));
+      });
+      tw.appendChild(document.createTextNode(')'));
+    }
+    el.appendChild(mk('span', 'xy', '[' + x + ':' + y + ']'));
+  }
+  function mapBar() {
+    var bar = document.getElementById('ikm-mapbar');
+    var on = isThumb() && camView() === 'world' && document.getElementById('mapCoordInput');
+    if (!on) { if (bar) { bar.hidden = true; closeMapDrop(); } return; }
+    if (!bar) bar = makeMapBar();
+    bar.hidden = false;
+    var top = 0;
+    Array.prototype.forEach.call(document.querySelectorAll('#breadcrumbs, #servertime, .servertime, #GF_toolbar'), function (e) {
+      var r = e.getBoundingClientRect();
+      if (r.height && r.top < window.innerHeight / 3) top = Math.max(top, r.bottom);
+    });
+    bar.style.top = Math.round(top + PANEL_GAP) + 'px';
+    var mx = bar.querySelector('#ikm-mx'), my = bar.querySelector('#ikm-my');
+    var editing = document.activeElement === mx || document.activeElement === my;
+    // the boxes show the selected island's coordinates (the game keeps them), unless being typed in
+    var gx = document.getElementById('inputXCoord'), gy = document.getElementById('inputYCoord');
+    if (!editing && gx && gy) {
+      if (mx.value !== gx.value) mx.value = gx.value;
+      if (my.value !== gy.value) my.value = gy.value;
+    }
+    var mark = null;
+    try { mark = worldmap.markedIslandXY; } catch (e) { mark = null; }
+    var x = mark && mark.length === 2 ? mark[0] : parseInt(gx && gx.value, 10), y = mark && mark.length === 2 ? mark[1] : parseInt(gy && gy.value, 10);
+    var pick = bar.querySelector('#ikm-mpick .line');
+    var sig = x + ':' + y + '|' + shortcutList().map(function (s) { return s.x + ':' + s.y + s.text + s.towns.join(); }).join(',') + '|' + !!islandInfo(x, y);
+    if (x > 0 && y > 0 && pick.__ikmSig !== sig) { pick.__ikmSig = sig; islandLine(pick, x, y); }
+    var shown = function (id) { var e = document.getElementById(id); return !!(e && e.style.display !== 'none' && e.style.display !== ''); };
+    var add = document.getElementById('islandAddButton'), del = document.getElementById('islandRemoveButton');
+    bar.querySelector('#ikm-madd').hidden = !shown('islandAddButton');
+    bar.querySelector('#ikm-mdel').hidden = !shown('islandRemoveButton');
+    if (add) bar.querySelector('#ikm-madd').title = add.title;
+    if (del) bar.querySelector('#ikm-mdel').title = del.title;
+  }
+  function makeMapBar() {
+    var bar = document.createElement('div');
+    bar.id = 'ikm-mapbar';
+    bar.className = 'ikm-ui';
+    bar.innerHTML = '<label>X<input id="ikm-mx" type="text" inputmode="numeric" maxlength="3" autocomplete="off" enterkeyhint="next"></label>' +
+      '<label>Y<input id="ikm-my" type="text" inputmode="numeric" maxlength="3" autocomplete="off" enterkeyhint="next"></label>' +
+      '<input class="stop" type="text" aria-hidden="true" autocomplete="off">' +
+      '<button id="ikm-mgo" type="button">\u279C</button>' +
+      '<button id="ikm-mpick" type="button"><span class="line"></span><span class="arrow">\u25BE</span></button>' +
+      '<button id="ikm-madd" type="button">\u2605</button><button id="ikm-mdel" type="button">\u2715</button>';
+    document.body.appendChild(bar);
+    var mx = bar.querySelector('#ikm-mx'), my = bar.querySelector('#ikm-my'), stop = bar.querySelector('.stop');
+    var other = function (i) { return i === mx ? my : mx; };
+    var go = function () {
+      var x = parseInt(mx.value, 10), y = parseInt(my.value, 10);
+      var gx = document.getElementById('inputXCoord'), gy = document.getElementById('inputYCoord');
+      if (!(x > 0 && y > 0) || !gx || !gy) return;
+      mx.__typed = my.__typed = false;
+      if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+      closeMapDrop();
+      gx.value = x; gy.value = y;
+      focusAfterJump([x, y]);
+      try { ikariam.getMapNavigation().jumpToCoord(); } catch (e) { focus = null; }
+    };
+    var selectAll = function (i) { setTimeout(function () { try { i.select(); } catch (e) { /* not focused */ } }, 0); };
+    [mx, my].forEach(function (i) {
+      i.addEventListener('focus', function () {
+        // the keyboard's key: Go once the other box was typed in, else Next (to the other box)
+        i.enterKeyHint = other(i).__typed ? 'go' : 'next';
+        selectAll(i);
+        setTimeout(function () { if (document.activeElement === i) selectAll(i); }, 120);
+        closeMapDrop();
+      });
+      i.addEventListener('mouseup', function () { selectAll(i); });
+      i.addEventListener('input', function () { i.value = i.value.replace(/\D+/g, ''); i.__typed = true; });
+      i.addEventListener('keydown', function (e) {
+        if (e.key !== 'Enter') return;
+        e.preventDefault();
+        if (other(i).__typed || i.enterKeyHint === 'go') go(); else other(i).focus();
+      });
+      i.addEventListener('blur', function () {
+        setTimeout(function () {
+          var a = document.activeElement;
+          if (a !== mx && a !== my && a !== stop) mx.__typed = my.__typed = false;   // left the boxes: start again
+        }, 0);
+      });
+    });
+    // the keyboard's Next from Y lands on this invisible stop: it passes on to X
+    stop.addEventListener('focus', function () { mx.focus(); });
+    bar.querySelector('#ikm-mgo').addEventListener('click', go);
+    bar.querySelector('#ikm-mpick').addEventListener('click', function (e) {
+      e.stopPropagation();
+      if (document.getElementById('ikm-mapdrop')) closeMapDrop(); else openMapDrop(bar);
+    });
+    bar.querySelector('#ikm-madd').addEventListener('click', function () {
+      closeMapDrop();
+      var b2 = document.getElementById('islandAddButton'); if (b2) b2.click();
+    });
+    bar.querySelector('#ikm-mdel').addEventListener('click', function () {
+      closeMapDrop();
+      var b2 = document.getElementById('islandRemoveButton'); if (b2) b2.click();
+    });
+    return bar;
+  }
+  // The shortcut list, dropping down from the island button: each island with its resource,
+  // name (your town on it) and coordinates.
+  function openMapDrop(bar) {
+    closeMapDrop();
+    var list = shortcutList();
+    if (!list.length) return;
+    var drop = document.createElement('div');
+    drop.id = 'ikm-mapdrop';
+    drop.className = 'ikm-ui';
+    var title = (document.getElementById('mapShortcutInput') || {}).title;
+    if (title) drop.appendChild(mk('div', 'hd', title.replace(/-/g, ' ')));
+    var mark = null;
+    try { mark = worldmap.markedIslandXY; } catch (e) { mark = null; }
+    // your towns' islands first, then (under a line) the islands you saved, each with its own delete
+    var own = list.filter(function (s) { return s.own; }), saved = list.filter(function (s) { return !s.own; });
+    own.concat(saved).forEach(function (s, i) {
+      if (i === own.length && own.length && saved.length) drop.appendChild(mk('div', 'sep'));
+      var b = mk('div', 'row' + (mark && mark[0] == s.x && mark[1] == s.y ? ' current' : ''));
+      b.setAttribute('role', 'button');
+      islandLine(b, s.x, s.y, s.text, true);
+      if (!s.own) {
+        var del = mk('button', 'del', '\u2715');
+        del.type = 'button';
+        del.title = (document.getElementById('islandRemoveButton') || {}).title || '';
+        del.addEventListener('click', function (e) {
+          e.stopPropagation();
+          closeMapDrop();
+          removeShortcut(s);
+        });
+        b.appendChild(del);
+      }
+      b.addEventListener('click', function (e) {
+        e.stopPropagation();
+        closeMapDrop();
+        var gs = document.getElementById('js_homeCitySelect');
+        if (!gs) return;
+        gs.value = s.x + ':' + s.y;
+        focusAfterJump([s.x, s.y]);
+        try { ikariam.getMapNavigation().jumpToShortcut(); } catch (err) { focus = null; }
+      });
+      drop.appendChild(b);
+    });
+    var r = bar.querySelector('#ikm-mpick').getBoundingClientRect();
+    drop.style.top = Math.round(bar.getBoundingClientRect().bottom + 4) + 'px';
+    document.body.appendChild(drop);
+    setTimeout(function () { document.addEventListener('touchstart', dropOutside, true); }, 0);
+  }
+  // The game's own "remove from the shortcut list", with its own question (Yes / Cancel).
+  function removeShortcut(s) {
+    var f = function (id, v) { var e = document.getElementById(id); if (e) e.value = v; return !!e; };
+    var info = islandInfo(s.x, s.y);
+    if (!f('js_shortcutX', s.x) || !f('js_shortcutY', s.y)) return;
+    f('js_shortcutFunction', 'removeIslandFromShortcut');
+    f('js_shortcutName', s.text || (info && info[0]) || '');
+    try { window.confirmShortcutAction(0); } catch (e) { /* the game's own */ }
+  }
+  function dropOutside(e) {
+    var d = document.getElementById('ikm-mapdrop');
+    if (d && !d.contains(e.target) && !(e.target.closest && e.target.closest('#ikm-mpick'))) closeMapDrop();
+  }
+  function closeMapDrop() {
+    var d = document.getElementById('ikm-mapdrop');
+    document.removeEventListener('touchstart', dropOutside, true);
+    if (!d) return false;
+    d.parentNode.removeChild(d);
+    return true;
   }
   // Zoom to z2 keeping the map point under screen point (mx, my) where it is.
   function camZoomAt(z2, mx, my, anchor) {
@@ -637,8 +953,21 @@
 
   // Taps on the map wait a moment to see whether a second tap follows (double-tap = zoom).
   var lastTap = null, tapTimer = 0;
-  function tapAt(x, y) {
+  // A tap on a town's building goes to its link: the top piece at that point can be the building's
+  // picture or a neighbour's (the Pirate Fortress' picture covers its own link), which opens nothing.
+  function tapTarget(x, y) {
     var el = document.elementFromPoint(x, y);
+    if (!el || !el.closest || !el.closest('#locations') || el.closest('a[href], [onclick]')) return el;
+    var all = document.elementsFromPoint(x, y);
+    for (var i = 0; i < all.length; i++) {
+      var a = all[i].closest && all[i].closest('#locations a[href], #locations [onclick]');
+      if (a) return a;
+    }
+    var b = el.closest('#locations .building'), own = b && b.querySelector('a[href], [onclick]');
+    return own || el;
+  }
+  function tapAt(x, y) {
+    var el = tapTarget(x, y);
     if (!el) return;
     clearHover();
     mouse('mouseover', x, y, el, 0);
@@ -774,6 +1103,13 @@
       box: box,
       t: performance.now(), v: 0
     };
+    // A slider (transport, trades...): a touch on its knob takes it at once; one on its track takes it
+    // when the finger then moves sideways (up / down still scrolls the window).
+    var sl = !map && sliderAt(t.clientX, t.clientY);
+    if (sl) {
+      g.sl = sl;
+      if (sl.onThumb) { if (e.cancelable) e.preventDefault(); sliderGrab(t.clientX); }
+    }
     // Inside zoomed window content: one finger pans, a double-tap on empty space resets.
     if (box && isPortrait() && box.classList.contains('mainContentScroll')) {
       var zmc = box.querySelector('.mainContent');
@@ -822,6 +1158,16 @@
 
     var t = e.touches[0];
     var dx = t.clientX - g.x0, dy = t.clientY - g.y0;
+
+    if (g.mode === 'pending' && g.sl && Math.abs(dx) >= 6 && Math.abs(dx) > Math.abs(dy)) {
+      clearTimeout(g.timer);
+      sliderGrab(t.clientX);
+    }
+    if (g.mode === 'slider') {
+      if (e.cancelable) e.preventDefault();
+      sliderMove(t.clientX);
+      return;
+    }
 
     if (g.mode === 'bdrag') {                  // a building being moved
       if (e.cancelable) e.preventDefault();
@@ -902,6 +1248,9 @@
     if (g.mode === 'bdrag') {
       if (e.cancelable) e.preventDefault();
       putDown(true);
+    } else if (g.mode === 'slider') {
+      if (e.cancelable) e.preventDefault();
+      mouse('mouseup', g.sl.mx, g.sl.my, null, 0);
     } else if (g.mode === 'drag') {
       var up = dragPoint(g.x, g.y);
       mouse('mouseup', up.x, up.y, null, 0);
@@ -962,11 +1311,86 @@
       if (g.mode === 'drag') { var up = dragPoint(g.x, g.y); mouse('mouseup', up.x, up.y, null, 0); }
       if (g.mode === 'windrag') savePanelPos(g.win);
       if (g.mode === 'bdrag') putDown(false);
+      if (g.mode === 'slider') mouse('mouseup', g.sl.mx, g.sl.my, null, 0);
     }
     g = null;
   }
 
 
+
+  /* ------------------------------------------------------------ sliders */
+
+  // The game's sliders are made for a mouse: a knob 14 px wide. Here the knob can be taken from a
+  // wide band around it, follows the finger exactly (the window is scaled, the game is not told) and
+  // ticks on every step of its number, firmer at both ends.
+  function sliderAt(x, y) {
+    var best = null, bd = 1e9;
+    // every knob in a game window (transport, trades, barracks, shipyard, tavern...), whatever its track is called
+    Array.prototype.forEach.call(document.querySelectorAll('.templateView .sliderthumb, #sidebar .sliderthumb'), function (th) {
+      var bg = th.closest('.sliderbg') || th.parentElement;
+      var r = bg.getBoundingClientRect(), k = th.getBoundingClientRect();
+      if (!r.width || !k.width || r.width < 40) return;
+      var cy = (r.top + r.bottom) / 2, band = Math.max(26, r.height);
+      if (x < r.left - 24 || x > r.right + 24 || Math.abs(y - cy) > band) return;
+      var d = Math.abs(y - cy);
+      if (d < bd) {
+        bd = d;
+        var kx = (k.left + k.right) / 2, s = th.closest('.sliderinput') || bg.parentElement;
+        best = { el: s, bg: bg, thumb: th, onThumb: Math.abs(x - kx) <= Math.max(44, k.width * 1.5), input: sliderInput(s) };
+      }
+    });
+    return best;
+  }
+  // The number box that goes with the slider: the nearest one around it (units keep theirs further away).
+  function sliderInput(s) {
+    var r = s.getBoundingClientRect(), cx = (r.left + r.right) / 2, cy = (r.top + r.bottom) / 2;
+    for (var a = s.parentElement, n = 0; a && n < 5; a = a.parentElement, n++) {
+      var best = null, bd = 1e9;
+      Array.prototype.forEach.call(a.querySelectorAll('input[type=text], input[type=number], input:not([type])'), function (i) {
+        var q = i.getBoundingClientRect();
+        if (!q.width) return;
+        var d = Math.abs((q.top + q.bottom) / 2 - cy) * 2 + Math.abs((q.left + q.right) / 2 - cx) * 0.2;
+        if (d < bd) { bd = d; best = i; }
+      });
+      if (best && bd < 260) return best;
+    }
+    return null;
+  }
+  function sliderGrab(x) {
+    var sl = g.sl, k = sl.thumb.getBoundingClientRect();
+    clearHover();
+    g.mode = 'slider';
+    sl.scale = (k.width / (sl.thumb.offsetWidth || k.width)) || 1;    // screen px per game px
+    sl.mx = (k.left + k.right) / 2;
+    sl.my = (k.top + k.bottom) / 2;
+    sl.x0 = sl.mx;
+    sl.last = sl.input ? sl.input.value : '';
+    sl.at = k.left;
+    sl.buzzAt = 0;
+    mouse('mouseover', sl.mx, sl.my, sl.thumb, 0);
+    mouse('mousedown', sl.mx, sl.my, sl.thumb, 1);
+    sliderMove(x);                                  // the knob comes to the finger
+  }
+  function sliderMove(x) {
+    var sl = g.sl;
+    sl.mx = sl.x0 + (x - sl.x0) / sl.scale;
+    mouse('mousemove', sl.mx, sl.my, null, 1);
+    // a tick on each step of its number; a slider without a number box ticks every few pixels
+    var k0 = sl.thumb.getBoundingClientRect();
+    if (sl.input) {
+      var v = sl.input.value;
+      if (v === sl.last) return;
+      sl.last = v;
+    } else {
+      if (Math.abs(k0.left - sl.at) < 8) return;
+      sl.at = k0.left;
+    }
+    var now = performance.now();
+    if (cfg.wheelBuzz === false || !A || !A.notch || now - sl.buzzAt < 28) return;
+    var bg = sl.bg.getBoundingClientRect(), k = sl.thumb.getBoundingClientRect();
+    A.notch(k.left <= bg.left + 1 || k.right >= bg.right - 1);
+    sl.buzzAt = now;
+  }
 
   /* ------------------------------------------------------------ rearrange buildings */
 
@@ -1001,6 +1425,29 @@
     }
     if (!spot || !spot.hasAttribute('data-id')) return null;
     return { el: spot, id: parseInt(spot.getAttribute('data-id'), 10) };
+  }
+  // Where a building stands on the ground: an empty lot's picture, else its spot widened (the game's
+  // hit shape starts well above the ground, so the green mark floated over the lot and a drop on the
+  // lot's lower half missed).
+  function groundRect(b) {
+    var img = b.classList.contains('buildingGround') && b.querySelector('.buildingimg'), r;
+    if (img && (r = img.getBoundingClientRect()).width) return { left: r.left, top: r.top, right: r.right, bottom: r.bottom };
+    r = b.getBoundingClientRect();
+    if (!r.width) return null;
+    var cx = (r.left + r.right) / 2, cy = (r.top + r.bottom) / 2, w = r.width * 0.75, h = r.height * 0.95;
+    return { left: cx - w, top: cy - h, right: cx + w, bottom: cy + h };
+  }
+  // The spot whose ground is under the finger (the nearest one if grounds overlap), else the game's shapes.
+  function dropSpotAt(x, y) {
+    var best = null, bd = 1e9;
+    Array.prototype.forEach.call(document.querySelectorAll('#locations .building[data-id]'), function (b) {
+      var r = groundRect(b);
+      if (!r || x < r.left || x > r.right || y < r.top || y > r.bottom) return;
+      var dx = (x - (r.left + r.right) / 2) / (r.right - r.left), dy = (y - (r.top + r.bottom) / 2) / (r.bottom - r.top);
+      var d = dx * dx + dy * dy;
+      if (d < bd) { bd = d; best = { el: b, id: parseInt(b.getAttribute('data-id'), 10), r: r }; }
+    });
+    return best || spotAt(x, y);
   }
   function canMove(id) {
     var all = cityPositions(), p = all && all[id];
@@ -1067,18 +1514,22 @@
       camApply();
     }
     // the picture floats above the finger, so the place under the finger stays in sight
-    d.ghost.style.transform = 'translate(' + (x - d.w * d.k / 2).toFixed(1) + 'px,' + (y - d.h * d.k - 34).toFixed(1) + 'px) scale(' + d.k.toFixed(3) + ')';
-    var to = spotAt(x, y);
+    // the building sits under the thumb
+    d.ghost.style.transform = 'translate(' + (x - d.w * d.k / 2).toFixed(1) + 'px,' + (y - d.h * d.k * 0.6).toFixed(1) + 'px) scale(' + d.k.toFixed(3) + ')';
+    var to = dropSpotAt(x, y);
     d.to = to && to.id !== d.id ? to : null;
-    d.ring.style.display = d.to ? 'block' : 'none';
-    if (d.to) {
-      var shape = d.to.el.querySelector('.draggableElement'), r = shape && shape.getBoundingClientRect();
-      if (!r || !r.width) r = { left: x - 50, top: y - 30, width: 100, height: 60 };
-      d.ring.classList.toggle('ikm-no', !canDrop(d.id, d.to.id));
-      d.ring.style.left = r.left + 'px';
-      d.ring.style.top = r.top + 'px';
-      d.ring.style.width = r.width + 'px';
-      d.ring.style.height = r.height + 'px';
+    // a good place under the thumb: a green ring pulses out from behind it, and a firm buzz
+    var ok = !!(d.to && canDrop(d.id, d.to.id));
+    d.ring.style.display = ok ? 'block' : 'none';
+    if (ok) {
+      d.ring.style.left = x + 'px';
+      d.ring.style.top = y + 'px';
+      if (d.okId !== d.to.id) {
+        d.okId = d.to.id;
+        if (A && A.notch && cfg.wheelBuzz !== false) A.notch(true); else if (A && A.haptic) A.haptic();
+      }
+    } else {
+      d.okId = null;
     }
     d.raf = requestAnimationFrame(buildingFrame);
   }
@@ -1086,7 +1537,7 @@
     var d = g && g.lift;
     if (!d || !d.ghost) return;
     cancelAnimationFrame(d.raf);
-    var to = drop ? spotAt(g.x, g.y) : null;           // before the box takes touches again
+    var to = drop ? dropSpotAt(g.x, g.y) : null;       // before the box takes touches again
     [d.ghost, d.ring].forEach(function (e) { e.parentNode.removeChild(e); });
     d.ghost = d.ring = null;
     d.el.classList.remove('ikm-lifted');
@@ -1299,6 +1750,15 @@
     return true;
   };
 
+  // A game pop-up that asks something (two buttons, or a box to type in, e.g. "save this island"): Back is
+  // its Cancel, through the game's own closePopup. (One with a single button is left to closeByText.)
+  function closeGamePopup() {
+    var pops = Array.prototype.filter.call(document.querySelectorAll('#popupMessage > .popupMessage'), visible);
+    var pm = pops[pops.length - 1];
+    if (!pm || !pm.id || !(pm.querySelector('#js_popupBtn2') || pm.querySelector('input[type=text], textarea'))) return false;
+    try { ikariam.getPopupController().closePopup(pm.id); return true; } catch (e) { return false; }
+  }
+
   // Offer pop-ups close with a text button ("اغلق") instead of an X.
   var CLOSE_WORDS = /^(اغلق|أغلق|إغلاق|اغلاق|close|schließen|ok|موافق)$/i;
   function closeByText() {
@@ -1332,6 +1792,9 @@
   var closeTopByX = api.closeTop;
   api.closeTop = function () {
     if (hovered) { clearHover(); return true; }  // a hover info shown by a long press
+    if (closeBubbleForm()) return true;
+    if (closeMapDrop()) return true;
+    if (closeGamePopup()) return true;
     if (closeAppSettings() || closeSheet() || slideCancel()) return true;
     if (closeTransport()) return true;         // it lies over the windows
     if (autoOpen) { retractAuto(); return true; }
@@ -1382,6 +1845,10 @@
     '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 28" fill="#b5862f">' +
     '<circle cx="8" cy="13" r="4.5"/><path d="M0 28c0-11 16-11 16 0z"/>' +
     '<path d="M13 1h13a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-6l-4 4v-4h-3a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2z"/></svg>');
+
+  // Discord's logo (white on its blue), for its square button in More.
+  var ICON_DISCORD = 'data:image/svg+xml,' + encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 127.14 96.36" fill="#fff"><path d="M107.7 8.07A105.15 105.15 0 0 0 81.47 0a72.06 72.06 0 0 0-3.36 6.83 97.68 97.68 0 0 0-29.11 0A72.37 72.37 0 0 0 45.64 0a105.89 105.89 0 0 0-26.25 8.09C2.79 32.65-1.71 56.6.54 80.21a105.73 105.73 0 0 0 32.17 16.15 77.7 77.7 0 0 0 6.89-11.11 68.42 68.42 0 0 1-10.85-5.18c.91-.66 1.8-1.34 2.66-2a75.57 75.57 0 0 0 64.32 0c.87.71 1.76 1.39 2.66 2a68.68 68.68 0 0 1-10.87 5.19 77 77 0 0 0 6.89 11.1 105.25 105.25 0 0 0 32.19-16.14c2.64-27.38-4.51-51.11-18.9-72.15ZM42.45 65.69C36.18 65.69 31 60 31 53s5-12.74 11.43-12.74S54 46 53.89 53s-5.05 12.69-11.44 12.69Zm42.24 0C78.41 65.69 73.25 60 73.25 53s5-12.74 11.44-12.74S96.23 46 96.12 53s-5.04 12.69-11.43 12.69Z"/></svg>');
 
   var QUICK_OPEN = '110ms cubic-bezier(.2, .8, .3, 1)';
   var QUICK_CLOSE = '520ms cubic-bezier(.35, 0, .6, 1)';
@@ -1585,6 +2052,58 @@
         ' direction: ltr; overflow: hidden; touch-action: none; cursor: pointer; border: 2px solid #c9a96a; border-radius: 10px;' +
         ' background: #f2e3c2; }',
       C + '#ikm-town * { pointer-events: none; }',
+      T + '#popupMessage > .popupMessage:not([data-ikm-fit]) { opacity: 0' + I + ' }',
+      // a bubble with a form (bubbleForms): in the middle of the map, solid, bigger
+      T + '.bubble_tip.ikm-bubbleform { position: fixed' + I + ' left: 50%' + I + ' top: 42%' + I + ' right: auto' + I +
+        ' transform: translate(-50%, -50%) scale(var(--ikm-bz, 2))' + I + ' transform-origin: 50% 50%' + I + ' }',
+      T + '.bubble_tip.ikm-bubbleform .feedbackTip { opacity: 1' + I + ' }',
+      // the world map's navigation bar (mapBar)
+      '#ikm-mapbar { position: fixed; left: 8px; right: 8px; height: 52px; z-index: 83; display: flex; align-items: center;' +
+        ' gap: 6px; padding: 0 6px; box-sizing: border-box; direction: ltr; background: #f2e3c2; border: 2px solid #c9a96a;' +
+        ' border-radius: 10px; color: #542c0f; font: bold 20px sans-serif; box-shadow: 0 2px 6px rgba(0,0,0,.35); }',
+      '#ikm-mapbar[hidden], #ikm-mapbar [hidden] { display: none !important; }',
+      '#ikm-mapbar input { width: 58px; height: 38px; box-sizing: border-box; border: 1px solid #c9a96a; border-radius: 6px;' +
+        ' background: #fdf7dd; color: #542c0f; font: 20px sans-serif; text-align: center; padding: 0; }',
+      '#ikm-mapbar label { display: flex; align-items: center; gap: 3px; flex: none; }',
+      '#ikm-mapbar .stop { position: absolute; left: 0; top: 0; width: 1px; height: 1px; opacity: 0; border: 0; padding: 0; pointer-events: none; }',
+      '#ikm-mapbar #ikm-mpick { flex: 1; width: auto; min-width: 0; display: flex; align-items: center; gap: 5px; padding: 0 6px;' +
+        ' color: #542c0f; border-color: #c9a96a; background: #fdf7dd; font: 17px sans-serif; }',
+      // resource on the left, coordinates on the right, on every server
+      '#ikm-mapbar #ikm-mpick .line, #ikm-mapdrop .row { display: flex; align-items: center; gap: 8px; min-width: 0; flex: 1; direction: ltr; }',
+      '#ikm-mapbar #ikm-mpick .arrow { flex: none; font-size: 16px; }',
+      '#ikm-mapbar img, #ikm-mapdrop img { width: 24px; height: 24px; object-fit: contain; flex: none; }',
+      // the island button: one line (name, then the towns), cut short if long
+      '#ikm-mapbar .tx { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: left; }',
+      '#ikm-mapbar .tx .nm, #ikm-mapbar .tx .towns { display: inline; }',
+      '#ikm-mapbar .tx .towns { margin-left: 5px; font-weight: normal; }',
+      '#ikm-mapbar .tx, #ikm-mapdrop .tx, #ikm-mapbar .towns, #ikm-mapdrop .towns { direction: ltr; unicode-bidi: isolate; }',
+      '.ikm-ui .nm { font-weight: bold; unicode-bidi: plaintext; }',
+      '.ikm-ui .towns .town { unicode-bidi: plaintext; }',
+      '.ikm-ui .towns .dot { display: inline-block; margin: 0 .45em; color: #542c0f; font-size: .8em; vertical-align: .1em; }',
+      // the list: the name on its line, the towns under it on as many lines as they need
+      '#ikm-mapdrop .tx.stacked { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: flex-start;' +
+        ' text-align: left; padding: 6px 0; line-height: 1.25; }',
+      '#ikm-mapdrop .tx.stacked .towns { font-size: 17px; color: #6b4a22; white-space: normal; }',
+      '#ikm-mapbar .xy, #ikm-mapdrop .xy { flex: none; color: #8b5a2b; font-size: 15px; direction: ltr; }',
+      // the shortcut list (openMapDrop): in the game's colours, under the bar
+      '#ikm-mapdrop { position: fixed; left: 8px; right: 8px; z-index: 84; max-height: 60vh; overflow-y: auto; box-sizing: border-box;' +
+        ' padding: 6px; background: #f2e3c2; border: 2px solid #c9a96a; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,.4);' +
+        ' display: grid; gap: 5px; overscroll-behavior: contain; }',
+      '#ikm-mapdrop .hd { text-align: center; font: bold 18px sans-serif; color: #542c0f; padding: 4px 0 6px;' +
+        ' border-bottom: 1px solid #c9a96a; }',
+      '#ikm-mapdrop .row { min-height: 56px; padding: 0 12px; border: 1px solid #c9a96a; border-radius: 8px; background: #fdf7dd;' +
+        ' color: #542c0f; font: 20px sans-serif; }',
+      '#ikm-mapdrop .row.current { background: #ecd29b; border: 2px solid #8b1a1a; }',
+      '#ikm-mapdrop .sep { height: 0; margin: 4px 6px; border-top: 2px solid #b5862f; }',
+      '#ikm-mapdrop .row .del { flex: none; width: 46px; height: 42px; margin-inline-start: 4px; border: 1px solid #8b1a1a;' +
+        ' border-radius: 6px; background: #fff3cf; color: #8b1a1a; font: bold 22px sans-serif; padding: 0; }',
+      '#ikm-mapbar button { width: 42px; height: 38px; flex: none; border: 1px solid #8b1a1a; border-radius: 6px;' +
+        ' background: #fff3cf; color: #8b1a1a; font: bold 22px sans-serif; padding: 0; }',
+      // no town menu (island, world map): the town bar reaches to the screen's edge on that side
+      'html.ikm-thumb.ikm-no-tcity:not(.ikm-rtl) #container #ikm-town { left: 3px; }',
+      'html.ikm-thumb.ikm-no-tcity.ikm-rtl #container #ikm-town { right: 3px; }',
+      'html.ikm-thumb.ikm-no-tfriends:not(.ikm-rtl) #container #ikm-town { right: 3px; }',
+      'html.ikm-thumb.ikm-no-tfriends.ikm-rtl #container #ikm-town { left: 3px; }',
       C + '#ikm-town .ikm-track { position: absolute; top: 0; bottom: 0; left: 50%; width: 0; }',
       C + '#ikm-town .ikm-slot { position: absolute; top: 4px; bottom: 4px; left: -76px; width: 152px; box-sizing: border-box;' +
         ' display: flex; align-items: center; justify-content: center; gap: 6px; padding: 0 6px; border: 1px solid transparent;' +
@@ -1625,6 +2144,10 @@
       C + '#ikm-sheet .list button.current { background: #ecd29b; border: 2px solid #8b1a1a; font-weight: bold; }',
       C + '#ikm-sheet .list button.other { background: #f6dccb; }',
       C + '#ikm-sheet .list button.wide { grid-column: 1 / -1; }',
+      C + '#ikm-sheet .list .pair { display: flex; gap: 6px; min-width: 0; }',
+      C + '#ikm-sheet .list .pair button.version { flex: 1; min-width: 0; }',
+      C + '#ikm-sheet .list .pair button.discord { flex: none; width: 70px; padding: 0; background: #5865f2 url("' + ICON_DISCORD + '")' +
+        ' center / 40px no-repeat; border-color: #4752c4; }',
       C + '#ikm-sheet .list button.edit { margin-top: 4px; background: #ecd29b; font-weight: bold; }',
       C + '#ikm-sheet .list.editing { max-height: 94%; }',
       C + '#ikm-sheet .rows { display: grid; grid-template-columns: minmax(0, 1fr); gap: 6px; }',
@@ -1853,13 +2376,30 @@
     if (A && A.openAppSettings) {
       sheetButton(list, 'wide app', '\u2699  ' + tr('appSettings'), function () { A.openAppSettings(); });
     }
-    var logout = null;
+    var logout = null, links = [];
     Array.prototype.forEach.call(document.querySelectorAll('#GF_toolbar li a'), function (a) {
       if (a.querySelector('#servertime') || a.closest('.serverTime')) return;
       if (a.closest('.logout')) { logout = a; return; }
       // word for word the game's own row of links (its avatar picture goes with the player's name)
       var label = a.textContent.replace(/\s+/g, ' ').trim();
-      if (label) sheetButton(list, '', label, function () { press(a); });
+      if (label) links.push({ a: a, label: label });
+    });
+    // An odd number of links left a hole in the grid: Discord becomes a small square with its logo and
+    // shares one cell with the version.
+    var dc = links.filter(function (l) { return /discord/i.test(l.a.href || ''); })[0];
+    var ver = links.filter(function (l) { return l.a.closest('.version'); })[0];
+    var pair = links.length % 2 === 1 && dc && ver;
+    links.forEach(function (l) {
+      if (pair && l === ver) return;
+      if (pair && l === dc) {
+        var cell = list.appendChild(mk('div', 'pair'));
+        var d = sheetButton(cell, 'discord', '', function () { press(dc.a); });
+        d.title = dc.label;
+        d.setAttribute('aria-label', dc.label);
+        sheetButton(cell, 'version', ver.label, function () { press(ver.a); });
+        return;
+      }
+      sheetButton(list, '', l.label, function () { press(l.a); });
     });
     if (logout) sheetButton(list, 'wide', logout.textContent.trim() || logout.title, function () { press(logout); });
   }
@@ -2244,6 +2784,7 @@
       var box = document.getElementById(d.box);
       if (!box) return;
       box.hidden = !menuHasItems(document.getElementById(d.id));
+      document.documentElement.classList.toggle('ikm-no-' + d.box.slice(4), box.hidden);   // the town bar takes its place
       box.firstChild.setAttribute('aria-expanded', menuOpen(d) ? 'true' : 'false');
       var w = box.querySelector('.ikm-word');
       if (w) setText(w, tr(menuWord(d)));
@@ -2514,7 +3055,10 @@
   }
   function fitPopups() {
     var W = window.innerWidth, H = window.innerHeight;
-    popupUnits().forEach(function (child) {
+    popupUnits().forEach(function (child) { fitPopup(child, W, H, 0); });
+  }
+  function fitPopup(child, W, H, again) {
+    {
       if (child.classList.contains('modalBackground') || /^(SCRIPT|STYLE)$/.test(child.tagName)) return;
       var moved = (child.style.translate || '').split(' ');
       if (Math.abs(parseFloat(moved[0]) || 0) > 2 * W || Math.abs(parseFloat(moved[1]) || 0) > 2 * H) {
@@ -2533,6 +3077,20 @@
         l = Math.min(l, q.left); r = Math.max(r, q.right); t = Math.min(t, q.top); b = Math.max(b, q.bottom);
       });
       if (l === Infinity) { child.__ikmCentred = 0; return; }
+      // thumb: a small pop-up (save an island, confirm...) grows to be easy to read and press
+      var z = parseFloat(child.style.zoom) || 1;
+      if (isThumb()) {
+        var nat = (r - l) / z, natH = (b - t) / z;
+        var want = nat > 60 ? Math.min(POPUP_UP, (W - 2 * PANEL_GAP) / nat, (H * 0.8) / Math.max(natH, 1)) : 1;
+        if (want < 1) want = 1;
+        if (Math.abs(want - z) > 0.02) {
+          child.style.zoom = want === 1 ? '' : want.toFixed(3);
+          child.__ikmCentred = 0;
+          if (again < 2) fitPopup(child, W, H, again + 1);       // measured again, now
+          return;
+        }
+      }
+      child.setAttribute('data-ikm-fit', '1');            // placed: may be seen now (see the observer below)
       var w = Math.round(r - l), dx = 0, dy = 0;
       if (child.__ikmCentred !== w || l < 0 || r > W) dx = r - l > W ? 4 - l : W / 2 - (l + r) / 2;
       if (b > H - 4) dy = H - 4 - b;
@@ -2540,8 +3098,9 @@
       child.__ikmCentred = w;
       if (Math.abs(dx) < 1 && Math.abs(dy) < 1) return;
       var now = (child.style.translate || '').split(' ');
-      child.style.translate = ((parseFloat(now[0]) || 0) + dx).toFixed(1) + 'px ' + ((parseFloat(now[1]) || 0) + dy).toFixed(1) + 'px';
-    });
+      // (a zoomed pop-up moves zoom times as far as its translate says)
+      child.style.translate = ((parseFloat(now[0]) || 0) + dx / z).toFixed(1) + 'px ' + ((parseFloat(now[1]) || 0) + dy / z).toFixed(1) + 'px';
+    }
   }
 
   /* ------------------------------------------------------------ which server */
@@ -2608,10 +3167,44 @@
       aliveAt = now;
       A.alive();
     }
+    unseenNews(now);
     var sig = JSON.stringify(seen);
     if (sig === newsSig) return;
     newsSig = sig;
     A.seen(sig);
+  }
+
+  // News the app read for a notification (the game then counts it as read): until the player has looked
+  // at that advisor here, the advisor glows (advisorPictures) and those lines carry the game's own
+  // "highlight" again, as if the app had never looked. Looking = that advisor's window was open.
+  var unseen = {}, unseenAt = -1e9, unseenShown = {};
+  var ADVISOR_VIEWS = { cities: 'tradeAdvisor', military: 'militaryAdvisor', research: 'researchAdvisor', diplomacy: 'diplomacyAdvisor' };
+  function unseenNews(now) {
+    if (!A || !A.unseen) return;
+    if (now - unseenAt > 2500) {
+      unseenAt = now;
+      try { unseen = JSON.parse(A.unseen() || '{}') || {}; } catch (e) { unseen = {}; }
+    }
+    Object.keys(ADVISOR_VIEWS).forEach(function (key) {
+      var tv = document.querySelector('.templateView[id^="' + ADVISOR_VIEWS[key] + '"]');
+      if (!tv) { delete unseenShown[key]; return; }
+      var list = unseen[key];
+      if (list && list.length) {                      // seen now: remembered for this window only
+        var keys = unseenShown[key] || (unseenShown[key] = {});
+        list.forEach(function (l) { keys[l.k] = 1; });
+        delete unseen[key];
+        A.newsSeen(key);
+      }
+      var mine = unseenShown[key];
+      if (!mine) return;
+      Array.prototype.forEach.call(tv.querySelectorAll('tr'), function (tr) {
+        if (tr.classList.contains('highlight')) return;
+        var cells = Array.prototype.filter.call(tr.children, function (c) { return c.tagName === 'TD'; });
+        if (cells.length < 2) return;
+        var k = cells.map(function (c) { return (c.textContent || '').replace(/[\s ]+/g, ' ').trim(); }).join('|');
+        if (mine[k]) tr.classList.add('highlight');
+      });
+    });
   }
 
   /* ------------------------------------------------------------ town wheel */
@@ -3465,6 +4058,8 @@
     oneItemOut();
     markHitBoxes();
     markNumbers();
+    advisorPictures();
+    bubbleForms();
     fitPopups();
     // The fight report can be a single line ("your ships were lost"): that window is only as
     // tall as its text (taller again while its content is zoomed).
@@ -3520,6 +4115,56 @@
     updateReading();
   }
 
+  // A game "bubble" with a form in it (achievements: compare with another player) is placed by the
+  // game next to the mouse, which here is the screen's corner, half off it and see-through: in the
+  // thumb layout it opens in the middle of the map, solid and twice as big. Back closes it.
+  var BUBBLE_Z = 2.2;
+  function bubbleForms() {
+    Array.prototype.forEach.call(document.querySelectorAll('.bubble_tip'), function (b) {
+      var form = isThumb() && b.offsetWidth && b.querySelector('input:not([type=hidden]), button, form');
+      b.classList.toggle('ikm-bubbleform', !!form);
+      if (!form) return;
+      var k = Math.min(BUBBLE_Z, (window.innerWidth - 2 * PANEL_GAP) / b.offsetWidth);
+      b.style.setProperty('--ikm-bz', k.toFixed(3));
+    });
+  }
+  function closeBubbleForm() {
+    var b = Array.prototype.filter.call(document.querySelectorAll('.bubble_tip.ikm-bubbleform'), function (e) { return e.offsetWidth; })[0];
+    if (!b) return false;
+    b.style.display = 'none';
+    b.classList.remove('ikm-bubbleform');
+    return true;
+  }
+
+  // The game sets each advisor's state from the class the server sends; some have no picture in the
+  // game's style (an alert on the mayor, say). On a PC the advisors' shared background shows through;
+  // here that background is hidden (it only gives the roof), so the tile went see-through and the map
+  // showed in its place. Such a tile gets its own picture: the news one for an alert.
+  var ADVISOR_PICS = { cities: 'mayor', military: 'general', research: 'scientist', diplomacy: 'diplomat' };
+  function advisorPictures() {
+    var tiles = {}, base = '';
+    Object.keys(ADVISOR_PICS).forEach(function (k) {
+      var a = document.getElementById('js_GlobalMenu_' + k);
+      if (!a) return;
+      tiles[k] = a;
+      var img = getComputedStyle(a).backgroundImage;
+      if (!a.style.backgroundImage && /advisors\/\w+\.png/.test(img)) base = img;
+    });
+    if (!base) return;
+    Object.keys(tiles).forEach(function (k) {
+      var a = tiles[k], c = a.className || '';
+      var glow = /active|alert/.test(c) || !!(unseen[k] && unseen[k].length);    // news the app read for you
+      var want = ADVISOR_PICS[k] + (/premium/.test(c) ? '_premium' : '') + (glow ? '_active' : '') + '.png';
+      var mark = c + '|' + want;
+      if (a.__ikmPic === mark) return;
+      a.style.removeProperty('background-image');
+      var own = getComputedStyle(a).backgroundImage;
+      if (own && own !== 'none' && (!glow || /active|alert/.test(c))) { a.__ikmPic = mark; return; }
+      a.style.setProperty('background-image', base.replace(/advisors\/\w+\.png/, 'advisors/' + want), 'important');
+      a.__ikmPic = mark;
+    });
+  }
+
   // Is `e` inside something (below `box`) that cuts off what sticks out? Then its width does not
   // widen the window: e.g. the Pirate Fortress' ranking strip, 1200 px sliding in a 480 px frame.
   function clippedInside(e, box) {
@@ -3549,7 +4194,8 @@
   var PARK_ZONE = 120;                // classic: a wide window dragged down narrows over this many px
   var BIG_WINDOW = 600;               // thumb: windows this wide (the game's are 728) fill the width
   var WINDOW_UNDER = 264;             // thumb: room under a window with a side box (its upgrade part)
-  var SMALL_UP = 1.6;                 // thumb: a small fixed window may grow up to this
+  var SMALL_UP = 1.6;
+  var POPUP_UP = 1.8;                 // thumb: a small game pop-up may grow up to this                 // thumb: a small fixed window may grow up to this
   var panelPos = {}, panelPosKey = '';
   function loadPanelPos() {
     var key = isThumb() ? THUMB_POS_KEY : POS_KEY;
@@ -3815,6 +4461,35 @@
     setInterval(function () { if (!fingerBusy()) { watchLists(); syncTownLists(); } }, 600);
     setInterval(function () { reportPage(); reportNews(); }, 1000);
     setInterval(camCheck, 400);
+    // no mouse wheel on a phone: wheel events on the map would only turn the game's own zoom down
+    ['wheel', 'mousewheel', 'DOMMouseScroll'].forEach(function (type) {
+      window.addEventListener(type, function (e) {
+        if (!isPortrait() || !onMap(e.target)) return;
+        e.stopImmediatePropagation();
+        if (e.cancelable) e.preventDefault();
+      }, { capture: true, passive: false });
+    });
+    // A game pop-up is drawn by the game first (small, at its own place) and placed by the app after:
+    // it jumped. Now it is placed as it appears, before the screen shows it, and kept unseen until then.
+    (function watchPopups() {
+      var holder = document.getElementById('popupMessage');
+      if (!holder || !window.MutationObserver) return;
+      new MutationObserver(function () {
+        fitPopups();
+        setTimeout(function () {
+          Array.prototype.forEach.call(holder.querySelectorAll(':scope > .popupMessage:not([data-ikm-fit])'), function (pm) {
+            pm.setAttribute('data-ikm-fit', '1');           // never left unseen
+          });
+        }, 500);
+      }).observe(holder, { childList: true });
+    })();
+    // the advisors' glow for news the app read: there as the page shows, not after the first checks
+    (function earlyGlow(n) {
+      unseenNews(performance.now());
+      advisorPictures();
+      var done = document.getElementById('js_GlobalMenu_cities') && document.getElementById('js_GlobalMenu_cities').__ikmPic;
+      if (!done && n < 60) setTimeout(function () { earlyGlow(n + 1); }, 100);
+    })(0);
     setInterval(function () { addStyle(); applyViewport(); }, 2000);     // puts itself back if the page drops it
     guardFrame();
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', guardFrame);
